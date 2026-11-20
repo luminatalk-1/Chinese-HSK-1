@@ -18,7 +18,7 @@ const NAV_ITEMS: Array<{ id: MainTab; en: string; ar: string }> = [
   { id: 'characters', en: 'Characters', ar: 'الحروف' },
   { id: 'pinyin', en: 'Pinyin', ar: 'الصوتيات' },
   { id: 'grammar', en: 'Grammar', ar: 'القواعد' },
-  { id: 'practice', en: 'Practice', ar: 'التدريبات' },
+  { id: 'practice', en: 'Practice', ar: 'الممارسة' },
 ];
 
 export const TopBar: React.FC<TopBarProps> = ({

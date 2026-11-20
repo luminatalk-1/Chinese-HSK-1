@@ -23,7 +23,7 @@ const STORAGE_KEYS = {
 export default function App() {
   const [activeTab, setActiveTab] = useState<MainTab>('units');
   const [selectedUnit, setSelectedUnit] = useState<number>(1);
-  const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>('arena');
+  const [practiceSubTab, setPracticeSubTab] = useState<PracticeSubTab>('live');
   const [arenaUnit, setArenaUnit] = useState<number>(1);
 
   const [lang, setLang] = useState<UiLang>(() => {
