@@ -19,6 +19,7 @@ interface WorkspaceToolbarProps {
   totalWords: number;
   xp: number;
   activeAudioKey: string | null;
+  onOpenProgress?: () => void;
 }
 
 export const WorkspaceToolbar: React.FC<WorkspaceToolbarProps> = ({
@@ -36,6 +37,7 @@ export const WorkspaceToolbar: React.FC<WorkspaceToolbarProps> = ({
   totalWords,
   xp,
   activeAudioKey,
+  onOpenProgress,
 }) => {
   const isTesting = activeAudioKey === '__test_nihao__';
 
@@ -185,11 +187,27 @@ export const WorkspaceToolbar: React.FC<WorkspaceToolbarProps> = ({
 
       {/* Mastery & XP Readout */}
       <div className="flex items-center gap-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 font-medium font-mono-tabular">
-        <span>
-          {lang === 'ar' ? 'المتقنة:' : 'Mastered:'}{' '}
-          <strong className="text-teal-700 dark:text-teal-400">{masteredCount}</strong>
-          <span className="text-slate-400 dark:text-slate-500">/{totalWords}</span>
-        </span>
+        {onOpenProgress ? (
+          <button
+            type="button"
+            onClick={() => {
+              sfx.play('tab');
+              onOpenProgress();
+            }}
+            className="hover:text-teal-700 dark:hover:text-teal-400 transition-colors cursor-pointer whitespace-nowrap"
+            title={lang === 'ar' ? 'فتح لوحة التقدم' : 'Open Progress Dashboard'}
+          >
+            {lang === 'ar' ? 'المتقنة:' : 'Mastered:'}{' '}
+            <strong className="text-teal-700 dark:text-teal-400">{masteredCount}</strong>
+            <span className="text-slate-400 dark:text-slate-500">/{totalWords}</span>
+          </button>
+        ) : (
+          <span>
+            {lang === 'ar' ? 'المتقنة:' : 'Mastered:'}{' '}
+            <strong className="text-teal-700 dark:text-teal-400">{masteredCount}</strong>
+            <span className="text-slate-400 dark:text-slate-500">/{totalWords}</span>
+          </span>
+        )}
         <span aria-hidden="true" className="text-slate-300 dark:text-slate-700">
           ·
         </span>

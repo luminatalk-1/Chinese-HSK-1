@@ -3,6 +3,7 @@ import { TopBar, MainTab, UiLang } from './components/TopBar';
 import { WorkspaceToolbar } from './components/WorkspaceToolbar';
 import { AudioStudioModal } from './components/AudioStudioModal';
 import { EncyclopediaView } from './components/EncyclopediaView';
+import { ProgressDashboardView } from './components/ProgressDashboardView';
 import { CharactersView } from './components/CharactersView';
 import { PinyinLabView } from './components/PinyinLabView';
 import { GrammarView } from './components/GrammarView';
@@ -250,6 +251,7 @@ export default function App() {
           totalWords={HSK1_WORDS.length}
           xp={xp}
           activeAudioKey={activeAudioKey}
+          onOpenProgress={() => handleSelectTab('progress')}
         />
 
         {activeTab === 'units' && (
@@ -261,6 +263,21 @@ export default function App() {
             activeAudioKey={activeAudioKey}
             selectedUnit={selectedUnit}
             onSelectUnit={setSelectedUnit}
+            onQuizUnit={handleQuizUnit}
+          />
+        )}
+
+        {activeTab === 'progress' && (
+          <ProgressDashboardView
+            lang={lang}
+            showPinyin={showPinyin}
+            masteredIds={masteredIds}
+            onToggleMastered={handleToggleMastered}
+            activeAudioKey={activeAudioKey}
+            onOpenUnit={(unitId) => {
+              setSelectedUnit(unitId);
+              handleSelectTab('units');
+            }}
             onQuizUnit={handleQuizUnit}
           />
         )}

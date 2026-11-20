@@ -2,7 +2,7 @@ import React from 'react';
 import { SlidersHorizontal } from 'lucide-react';
 import { sfx } from '../utils/sfxEngine';
 
-export type MainTab = 'units' | 'characters' | 'pinyin' | 'grammar' | 'practice';
+export type MainTab = 'units' | 'progress' | 'characters' | 'pinyin' | 'grammar' | 'practice';
 export type UiLang = 'en' | 'ar';
 
 interface TopBarProps {
@@ -14,10 +14,11 @@ interface TopBarProps {
 
 const NAV_ITEMS: Array<{ id: MainTab; en: string; ar: string }> = [
   { id: 'units', en: 'Units', ar: 'الوحدات' },
-  { id: 'characters', en: 'Characters', ar: 'الحروف والجذور' },
-  { id: 'pinyin', en: 'Pinyin & Tones', ar: 'النطق والنغمات' },
-  { id: 'grammar', en: 'Grammar & Exam', ar: 'القواعد والامتحان' },
-  { id: 'practice', en: 'Practice & Arcade', ar: 'التدريبات والمحادثات' },
+  { id: 'progress', en: 'Progress', ar: 'التقدم' },
+  { id: 'characters', en: 'Characters', ar: 'الحروف' },
+  { id: 'pinyin', en: 'Pinyin', ar: 'الصوتيات' },
+  { id: 'grammar', en: 'Grammar', ar: 'القواعد' },
+  { id: 'practice', en: 'Practice', ar: 'التدريبات' },
 ];
 
 export const TopBar: React.FC<TopBarProps> = ({
