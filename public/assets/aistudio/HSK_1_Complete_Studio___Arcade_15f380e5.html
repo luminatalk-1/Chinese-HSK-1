@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HSK 1 Complete Studio — Mandarin Encyclopedia & Arcade</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Noto+Sans+SC:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: {
+              950: '#080D1A',
+              900: '#0F172A',
+              800: '#1E293B',
+              700: '#334155'
+            },
+            ivory: {
+              50: '#FFFDF9',
+              100: '#FAF7F2',
+              200: '#F2ECE1',
+              300: '#E5DCCB'
+            },
+            terracotta: {
+              500: '#C84B31',
+              600: '#A93B24'
+            },
+            jade: {
+              500: '#1F7A6E',
+              600: '#165B52'
+            },
+            gold: {
+              400: '#E2B46D',
+              500: '#D4A359',
+              600: '#B6853C'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            chinese: ['"Noto Sans SC"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #0F172A;
+      color: #FAF7F2;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .hanzi {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+
+    .study-card {
+      background-color: #FAF7F2;
+      color: #1E293B;
+      box-shadow: 0 20px 38px -14px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(212, 163, 89, 0.28);
+    }
+
+    /* Animated Equalizer Bars for Audio Buttons */
+    .eq-bars {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 14px;
+      width: 14px;
+    }
+    .eq-bars span {
+      display: block;
+      width: 2.5px;
+      background-color: currentColor;
+      border-radius: 999px;
+      transition: height 0.15s ease;
+    }
+    .eq-bars span:nth-child(1) { height: 6px; }
+    .eq-bars span:nth-child(2) { height: 12px; }
+    .eq-bars span:nth-child(3) { height: 8px; }
+    .eq-bars span:nth-child(4) { height: 5px; }
+
+    .is-speaking .eq-bars span {
+      animation: eqBounce 0.42s ease-in-out infinite alternate;
+    }
+    .is-speaking .eq-bars span:nth-child(1) { animation-delay: 0s; }
+    .is-speaking .eq-bars span:nth-child(2) { animation-delay: 0.12s; }
+    .is-speaking .eq-bars span:nth-child(3) { animation-delay: 0.24s; }
+    .is-speaking .eq-bars span:nth-child(4) { animation-delay: 0.08s; }
+
+    @keyframes eqBounce {
+      0% { height: 3px; }
+      100% { height: 14px; }
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: translateY(6px) scale(0.98); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .animate-pop {
+      animation: popIn 0.22s ease-out forwards;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-3px); }
+    }
+    .animate-shake {
+      animation: shake 0.32s ease-in-out;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0F172A;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-terracotta-500 selection:text-white">
+
+  <!-- GLOBAL TOP NAVIGATION BAR -->
+  <header class="sticky top-0 z-40 bg-ink-950/95 backdrop-blur-md border-b border-ink-800">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      <!-- Brand Title -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-terracotta-500 to-gold-500 flex items-center justify-center text-white font-bold text-xl hanzi shadow-lg">
+          汉
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-base sm:text-lg tracking-tight text-ivory-100">HSK 1 Complete Studio</h1>
+            <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-gold-500/20 text-gold-400 border border-gold-500/30">
+              155 Words
+            </span>
+          </div>
+          <p class="text-[11px] text-ivory-200/65 hidden sm:block">Encyclopedia • Grammar Codex • Tone Lab • Arcade</p>
+        </div>
+      </div>
+
+      <!-- Global Audio Test, Speed Control, Pinyin Toggle, Search & XP -->
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Prominent Test Audio Button -->
+        <button id="globalTestAudioBtn" onclick="testGlobalAudio(this)" class="px-3 py-1.5 rounded-xl bg-jade-500 hover:bg-jade-600 text-white text-xs font-semibold transition flex items-center gap-2 shadow">
+          <span class="eq-bars"><span></span><span></span><span></span><span></span></span>
+          <span id="audioStatusText">🔊 Test Audio (你好)</span>
+        </button>
+
+        <!-- Speed Toggle -->
+        <button id="speedToggleBtn" onclick="toggleAudioSpeed()" title="Toggle Speech Speed" class="px-2.5 py-1.5 rounded-xl bg-ink-800 border border-ink-700 hover:border-gold-500 text-xs font-mono font-semibold text-gold-400 transition">
+          1.0x
+        </button>
+
+        <!-- Global Pinyin Toggle -->
+        <button id="pinyinToggleBtn" onclick="togglePinyin()" class="px-2.5 py-1.5 rounded-xl bg-ink-800 border border-ink-700 hover:border-gold-500 text-xs font-semibold text-ivory-100 transition flex items-center gap-1.5">
+          <span id="pinyinIndicator" class="w-2 h-2 rounded-full bg-gold-400"></span>
+          <span>Pinyin: <strong id="pinyinStateLabel">ON</strong></span>
+        </button>
+
+        <!-- Quick Search Input -->
+        <div class="relative hidden md:block">
+          <input
+            id="globalSearchInput"
+            type="text"
+            oninput="handleGlobalSearch(this.value)"
+            placeholder="Search 汉字 / pinyin / عربي..."
+            class="w-48 lg:w-56 pl-3 pr-7 py-1.5 rounded-xl bg-ink-800 border border-ink-700 focus:border-gold-500 focus:outline-none text-xs text-ivory-100 placeholder-ivory-200/40"
+          />
+          <button onclick="clearGlobalSearch()" id="clearSearchBtn" class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-xs text-ivory-200/60 hover:text-white">✕</button>
+        </div>
+
+        <!-- Mastery & XP Pill -->
+        <div class="px-3 py-1.5 rounded-xl bg-ink-800 border border-ink-700 flex items-center gap-2.5 text-xs font-semibold">
+          <span title="Mastered Words" class="text-jade-500 flex items-center gap-1">
+            ✓ <strong id="masteredCountHud" class="text-ivory-100">0</strong><span class="text-ivory-200/50" id="totalWordsHud">/155</span>
+          </span>
+          <span class="text-ink-700">|</span>
+          <span title="Total XP" class="text-gold-400 flex items-center gap-1">
+            ✨ <strong id="xpCountHud" class="text-ivory-100">0</strong> XP
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 Main Navigation Tabs -->
+    <nav class="max-w-7xl mx-auto px-3 sm:px-6 pb-2.5 flex items-center gap-2 overflow-x-auto">
+      <button onclick="switchTab('encyclopedia')" data-tab="encyclopedia" class="main-tab px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition">
+        📚 HSK 1 Encyclopedia
+      </button>
+      <button onclick="switchTab('grammar')" data-tab="grammar" class="main-tab px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition">
+        📖 Grammar Codex
+      </button>
+      <button onclick="switchTab('pinyin')" data-tab="pinyin" class="main-tab px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition">
+        🎵 Pinyin & Tone Lab
+      </button>
+      <button onclick="switchTab('arena')" data-tab="arena" class="main-tab px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition">
+        ⚡ Vocabulary Arena
+      </button>
+      <button onclick="switchTab('arcade')" data-tab="arcade" class="main-tab px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition">
+        🧩 Sentence & Dialogue Arcade
+      </button>
+    </nav>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main id="mainWorkspace" class="flex-1 w-full max-w-7xl mx-auto px-3 sm:px-6 py-6">
+    <!-- Dynamic Tab Content -->
+  </main>
+
+  <!-- FLOATING TOAST -->
+  <div id="toastEl" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 translate-y-3 transition-all duration-200">
+    <div id="toastMsg" class="px-4 py-2.5 rounded-2xl bg-ink-800 border border-gold-500/50 text-ivory-100 text-xs sm:text-sm font-medium shadow-2xl"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-ink-800 py-4 text-center text-xs text-ivory-200/50 px-4">
+    HSK 1 Complete Studio • Multi-Layer Native Mandarin Audio Engine + Web Audio Tone Fallback • Progress Saved Automatically
+  </footer>
+
+  <script>
+    // =========================================================================
+    // 1. MULTI-LAYER SYNCHRONOUS AUDIOPLAYER (WORKS IN SANDBOXED IFRAMES)
+    // =========================================================================
+    class AudioPlayer {
+      constructor() {
+        this.currentAudio = null;
+        this.audioCtx = null;
+        this.rate = 1.0; // 1.0 or 0.75
+        this.activeBtn = null;
+        this.cleanupTimer = null;
+      }
+
+      setRate(newRate) {
+        this.rate = newRate;
+      }
+
+      stop() {
+        if (this.cleanupTimer) {
+          clearTimeout(this.cleanupTimer);
+          this.cleanupTimer = null;
+        }
+        if (this.currentAudio) {
+          try {
+            this.currentAudio.pause();
+            this.currentAudio.src = '';
+          } catch (e) {}
+          this.currentAudio = null;
+        }
+        if ('speechSynthesis' in window) {
+          try {
+            window.speechSynthesis.cancel();
+          } catch (e) {}
+        }
+        document.querySelectorAll('.is-speaking').forEach(el => el.classList.remove('is-speaking'));
+        this.activeBtn = null;
+      }
+
+      markPlaying(btnEl, statusLabel = null) {
+        if (btnEl) {
+          btnEl.classList.add('is-speaking');
+          this.activeBtn = btnEl;
+        }
+        if (statusLabel) {
+          const statusEl = document.getElementById('audioStatusText');
+          if (statusEl) statusEl.textContent = statusLabel;
+        }
+      }
+
+      clearPlaying(btnEl) {
+        if (btnEl) btnEl.classList.remove('is-speaking');
+        document.querySelectorAll('.is-speaking').forEach(el => el.classList.remove('is-speaking'));
+      }
+
+      /**
+       * Primary synchronous click-triggered Mandarin speech engine:
+       * 1) Youdao real Mandarin MP3 stream via HTML5 Audio()
+       * 2) Google Translate TTS MP3 fallback via HTML5 Audio()
+       * 3) Web Speech API (zh-CN) fallback
+       * 4) Web Audio API Tone Contour Synthesizer fallback (guaranteed audible)
+       */
+      speak(hanzi, btnEl = null, onStatus = null) {
+        if (!hanzi) return;
+        this.stop();
+
+        const cleanText = hanzi.replace(/[。？！，、？!,.]/g, '').trim() || hanzi;
+        const encoded = encodeURIComponent(cleanText);
+        const primaryUrl = `https://dict.youdao.com/dictvoice?audio=${encoded}&type=2`;
+        const fallbackUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=zh-CN&q=${encoded}`;
+
+        this.markPlaying(btnEl, onStatus ? 'Playing...' : null);
+
+        // Safety timer to stop wave animation even if network stalls
+        const maxDuration = Math.max(1800, cleanText.length * 650);
+        this.cleanupTimer = setTimeout(() => {
+          this.clearPlaying(btnEl);
+          if (onStatus) onStatus('Audio Active ✓');
+        }, maxDuration);
+
+        const audio = new Audio();
+        this.currentAudio = audio;
+        audio.playbackRate = this.rate;
+        audio.preload = 'auto';
+
+        let triedFallbackUrl = false;
+
+        audio.onplaying = () => {
+          if (onStatus) onStatus('Audio Active ✓');
+        };
+
+        audio.onended = () => {
+          this.clearPlaying(btnEl);
+          if (onStatus) onStatus('Audio Active ✓');
+        };
+
+        audio.onerror = () => {
+          if (!triedFallbackUrl) {
+            triedFallbackUrl = true;
+            audio.src = fallbackUrl;
+            audio.playbackRate = this.rate;
+            audio.play().catch(() => {
+              this.runSpeechOrToneFallback(cleanText, btnEl, onStatus);
+            });
+          } else {
+            this.runSpeechOrToneFallback(cleanText, btnEl, onStatus);
+          }
+        };
+
+        // Must invoke .play() synchronously inside user click stack
+        audio.src = primaryUrl;
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            if (!triedFallbackUrl) {
+              triedFallbackUrl = true;
+              audio.src = fallbackUrl;
+              audio.playbackRate = this.rate;
+              audio.play().catch(() => {
+                this.runSpeechOrToneFallback(cleanText, btnEl, onStatus);
+              });
+            } else {
+              this.runSpeechOrToneFallback(cleanText, btnEl, onStatus);
+            }
+          });
+        }
+      }
+
+      runSpeechOrToneFallback(text, btnEl, onStatus) {
+        let spoke = false;
+        if ('speechSynthesis' in window) {
+          try {
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.lang = 'zh-CN';
+            utter.rate = this.rate === 0.75 ? 0.72 : 0.92;
+            const voices = window.speechSynthesis.getVoices();
+            const zhVoice = voices.find(v => v.lang.toLowerCase().includes('zh'));
+            if (zhVoice) utter.voice = zhVoice;
+            utter.onend = () => {
+              this.clearPlaying(btnEl);
+              if (onStatus) onStatus('Audio Active ✓');
+            };
+            utter.onerror = () => {
+              this.playToneSynthFallback([1, 2, 3, 4].slice(0, Math.min(4, text.length)), btnEl, onStatus);
+            };
+            window.speechSynthesis.speak(utter);
+            spoke = true;
+            if (onStatus) onStatus('Audio Active ✓');
+          } catch (e) {
+            spoke = false;
+          }
+        }
+        if (!spoke) {
+          this.playToneSynthFallback([2, 3], btnEl, onStatus);
+        }
+      }
+
+      playToneSynthFallback(tones = [1], btnEl = null, onStatus = null) {
+        try {
+          if (!this.audioCtx) {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (Ctx) this.audioCtx = new Ctx();
+          }
+          if (!this.audioCtx) return;
+          if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
+
+          this.markPlaying(btnEl, onStatus ? 'Tone Synth ✓' : null);
+          const now = this.audioCtx.currentTime + 0.02;
+          const dur = this.rate === 0.75 ? 0.42 : 0.30;
+          const gap = this.rate === 0.75 ? 0.36 : 0.25;
+
+          tones.forEach((tone, idx) => {
+            const t0 = now + idx * gap;
+            const t1 = t0 + dur;
+            const osc = this.audioCtx.createOscillator();
+            const gain = this.audioCtx.createGain();
+            osc.type = 'triangle';
+
+            if (tone === 1) {
+              osc.frequency.setValueAtTime(330, t0);
+              osc.frequency.linearRampToValueAtTime(330, t1);
+            } else if (tone === 2) {
+              osc.frequency.setValueAtTime(220, t0);
+              osc.frequency.exponentialRampToValueAtTime(340, t1);
+            } else if (tone === 3) {
+              osc.frequency.setValueAtTime(210, t0);
+              osc.frequency.exponentialRampToValueAtTime(155, t0 + dur * 0.55);
+              osc.frequency.exponentialRampToValueAtTime(230, t1);
+            } else if (tone === 4) {
+              osc.frequency.setValueAtTime(360, t0);
+              osc.frequency.exponentialRampToValueAtTime(165, t1);
+            } else {
+              osc.frequency.setValueAtTime(240, t0);
+              osc.frequency.linearRampToValueAtTime(210, t0 + 0.18);
+            }
+
+            gain.gain.setValueAtTime(0.001, t0);
+            gain.gain.linearRampToValueAtTime(0.22, t0 + 0.03);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t1);
+
+            osc.connect(gain);
+            gain.connect(this.audioCtx.destination);
+            osc.start(t0);
+            osc.stop(t1 + 0.02);
+          });
+
+          setTimeout(() => {
+            this.clearPlaying(btnEl);
+            if (onStatus) onStatus('Audio Active ✓');
+          }, (tones.length * gap + dur) * 1000 + 80);
+        } catch (e) {}
+      }
+
+      playSfx(type) {
+        try {
+          if (!this.audioCtx) {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (Ctx) this.audioCtx = new Ctx();
+          }
+          if (!this.audioCtx) return;
+          if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
+          const now = this.audioCtx.currentTime;
+          const osc = this.audioCtx.createOscillator();
+          const gain = this.audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(this.audioCtx.destination);
+
+          if (type === 'ok') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(523.25, now);
+            osc.frequency.setValueAtTime(659.25, now + 0.07);
+            osc.frequency.setValueAtTime(783.99, now + 0.14);
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.linearRampToValueAtTime(0.14, now + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+            osc.start(now);
+            osc.stop(now + 0.36);
+          } else {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(190, now);
+            osc.frequency.exponentialRampToValueAtTime(115, now + 0.22);
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.linearRampToValueAtTime(0.15, now + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.24);
+            osc.start(now);
+            osc.stop(now + 0.25);
+          }
+        } catch (e) {}
+      }
+    }
+
+    const player = new AudioPlayer();
+
+    // =========================================================================
+    // 2. COMPLETE HSK 1 CURRICULUM DATABASE (12 UNITS • 155 WORDS)
+    // =========================================================================
+    const UNITS = [
+      { id: 1, title: '1. Greetings & Pronouns', ar: 'التحيات والضمائر' },
+      { id: 2, title: '2. Numbers & Measure Words', ar: 'الأرقام وأدوات التمييز' },
+      { id: 3, title: '3. Time, Dates & Calendar', ar: 'الوقت والتاريخ والتقويم' },
+      { id: 4, title: '4. Family & People', ar: 'العائلة والأشخاص' },
+      { id: 5, title: '5. Food, Drink & Dining', ar: 'الطعام والشراب' },
+      { id: 6, title: '6. Places & Locations', ar: 'الأماكن والاتجاهات' },
+      { id: 7, title: '7. Transport & Directions', ar: 'المواصلات والحركة' },
+      { id: 8, title: '8. Shopping, Money & Objects', ar: 'التسوق والأشياء' },
+      { id: 9, title: '9. Daily Verbs & Actions', ar: 'الأفعال اليومية' },
+      { id: 10, title: '10. Adjectives & States', ar: 'الصفات والحالات' },
+      { id: 11, title: '11. Weather & Nature', ar: 'الطقس والطبيعة' },
+      { id: 12, title: '12. Grammar Particles & Connectors', ar: 'أدوات القواعد والربط' }
+    ];
+
+    const HSK1_WORDS = [
+      // UNIT 1: Greetings & Pronouns (20)
+      { id: 'w1', u: 1, h: '你好', p: 'nǐ hǎo', en: 'Hello', ar: 'مرحباً', pos: 'Greeting', hook: '你 (you) + 好 (good). Spoken as ní hǎo (2nd+3rd tone sandhi).', exH: '你好！你叫什么名字？', exP: 'Nǐ hǎo! Nǐ jiào shénme míngzi?', exEn: 'Hello! What is your name?', exAr: 'مرحباً! ما اسمك؟' },
+      { id: 'w2', u: 1, h: '谢谢', p: 'xièxie', en: 'Thank you', ar: 'شكراً لك', pos: 'Verb', hook: '言 (speech radical) on the left — expressing gratitude with words.', exH: '谢谢你的帮助！', exP: 'Xièxie nǐ de bāngzhù!', exEn: 'Thank you for your help!', exAr: 'شكراً لمساعدتك!' },
+      { id: 'w3', u: 1, h: '不客气', p: 'bú kèqi', en: 'You’re welcome', ar: 'عفواً / على الرحب والسعة', pos: 'Phrase', hook: '不 changes to 2nd tone (bú) before 4th tone 客 (kè).', exH: '谢谢你！— 不客气。', exP: 'Xièxie nǐ! — Bú kèqi.', exEn: 'Thank you! — You’re welcome.', exAr: 'شكراً لك! — عفواً.' },
+      { id: 'w4', u: 1, h: '再见', p: 'zàijiàn', en: 'Goodbye', ar: 'مع السلامة / إلى اللقاء', pos: 'Verb', hook: '再 (again) + 见 (see) = "See you again."', exH: '老师，再见！', exP: 'Lǎoshī, zàijiàn!', exEn: 'Goodbye, teacher!', exAr: 'مع السلامة يا أستاذ!' },
+      { id: 'w5', u: 1, h: '对不起', p: 'duìbuqǐ', en: 'Sorry / Excuse me', ar: 'آسف / المعذرة', pos: 'Verb', hook: 'Used to apologize sincerely.', exH: '对不起，我来晚了。', exP: 'Duìbuqǐ, wǒ lái wǎn le.', exEn: 'Sorry, I arrived late.', exAr: 'آسف، لقد تأخرت.' },
+      { id: 'w6', u: 1, h: '没关系', p: 'méi guānxi', en: 'It doesn’t matter / No problem', ar: 'لا بأس / لا مشكلة', pos: 'Phrase', hook: 'Standard reply to 对不起 (Sorry).', exH: '对不起！— 没关系。', exP: 'Duìbuqǐ! — Méi guānxi.', exEn: 'Sorry! — No problem.', exAr: 'آسف! — لا بأس.' },
+      { id: 'w7', u: 1, h: '我', p: 'wǒ', en: 'I / Me', ar: 'أنا', pos: 'Pronoun', hook: 'Depicts a hand holding a ceremonial halberd representing the self.', exH: '我是学生。', exP: 'Wǒ shì xuéshēng.', exEn: 'I am a student.', exAr: 'أنا طالب.' },
+      { id: 'w8', u: 1, h: '你', p: 'nǐ', en: 'You', ar: 'أنتَ / أنتِ', pos: 'Pronoun', hook: '亻(person radical) on left + 尔 phonetic.', exH: '你好吗？', exP: 'Nǐ hǎo ma?', exEn: 'How are you?', exAr: 'كيف حالك؟' },
+      { id: 'w9', u: 1, h: '他', p: 'tā', en: 'He / Him', ar: 'هو', pos: 'Pronoun', hook: '亻(person radical) indicates male/general third person.', exH: '他是我的朋友。', exP: 'Tā shì wǒ de péngyou.', exEn: 'He is my friend.', exAr: 'هو صديقي.' },
+      { id: 'w10', u: 1, h: '她', p: 'tā', en: 'She / Her', ar: 'هي', pos: 'Pronoun', hook: '女 (woman radical) on the left; pronounced identically to 他 (tā).', exH: '她很漂亮。', exP: 'Tā hěn piàoliang.', exEn: 'She is very pretty.', exAr: 'هي جميلة جداً.' },
+      { id: 'w11', u: 1, h: '我们', p: 'wǒmen', en: 'We / Us', ar: 'نحن', pos: 'Pronoun', hook: '们 (men) pluralizes pronouns: 我们 (we), 你们 (you all), 他们 (they).', exH: '我们去学校。', exP: 'Wǒmen qù xuéxiào.', exEn: 'We go to school.', exAr: 'نحن نذهب إلى المدرسة.' },
+      { id: 'w12', u: 1, h: '这', p: 'zhè', en: 'This', ar: 'هذا / هذه', pos: 'Pronoun', hook: '辶 (walking radical) + 文 — pointing to something close by.', exH: '这是我的书。', exP: 'Zhè shì wǒ de shū.', exEn: 'This is my book.', exAr: 'هذا كتابي.' },
+      { id: 'w13', u: 1, h: '那', p: 'nà', en: 'That', ar: 'ذلك / تلك', pos: 'Pronoun', hook: 'Refers to something farther away from the speaker.', exH: '那是什么？', exP: 'Nà shì shénme?', exEn: 'What is that?', exAr: 'ما ذلك؟' },
+      { id: 'w14', u: 1, h: '哪', p: 'nǎ', en: 'Which', ar: 'أيّ', pos: 'Pronoun', hook: '口 (mouth) + 那 = asking "which?" (哪国人 = which nationality).', exH: '你是哪国人？', exP: 'Nǐ shì nǎ guó rén?', exEn: 'Which country are you from?', exAr: 'من أي بلد أنت؟' },
+      { id: 'w15', u: 1, h: '谁', p: 'shéi', en: 'Who / Whom', ar: 'مَن', pos: 'Pronoun', hook: '言 (speech radical) on left — asking who someone is.', exH: '他是谁？', exP: 'Tā shì shéi?', exEn: 'Who is he?', exAr: 'من هو؟' },
+      { id: 'w16', u: 1, h: '什么', p: 'shénme', en: 'What', ar: 'ماذا / ما', pos: 'Pronoun', hook: 'Placed directly where the answer goes in SVO word order.', exH: '你吃什么？', exP: 'Nǐ chī shénme?', exEn: 'What do you eat?', exAr: 'ماذا تأكل؟' },
+      { id: 'w17', u: 1, h: '多少', p: 'duōshao', en: 'How many / How much', ar: 'كم (للسعر والعدد الكبير)', pos: 'Pronoun', hook: '多 (many) + 少 (few) = asking quantity or price.', exH: '这个多少钱？', exP: 'Zhège duōshao qián?', exEn: 'How much money is this?', exAr: 'بكم هذا؟' },
+      { id: 'w18', u: 1, h: '几', p: 'jǐ', en: 'How many (under 10)', ar: 'كم (للأعداد الصغيرة)', pos: 'Pronoun', hook: 'Used for small numbers (1–10) and asking age of children or clock time.', exH: '你有几个苹果？', exP: 'Nǐ yǒu jǐ gè píngguǒ?', exEn: 'How many apples do you have?', exAr: 'كم تفاحة لديك؟' },
+      { id: 'w19', u: 1, h: '怎么', p: 'zěnme', en: 'How / Why', ar: 'كيف', pos: 'Pronoun', hook: '心 (heart) at the bottom — asking "how" an action is done.', exH: '这个字怎么读？', exP: 'Zhège zì zěnme dú?', exEn: 'How is this character read?', exAr: 'كيف يُقرأ هذا الحرف؟' },
+      { id: 'w20', u: 1, h: '怎么样', p: 'zěnmeyàng', en: 'How is it? / How about...?', ar: 'كيف الحال / ما رأيك؟', pos: 'Pronoun', hook: 'Placed at the end of a sentence to ask for an opinion or condition.', exH: '今天天气怎么样？', exP: 'Jīntiān tiānqì zěnmeyàng?', exEn: 'How is the weather today?', exAr: 'كيف الطقس اليوم؟' },
+
+      // UNIT 2: Numbers & Measure Words (16)
+      { id: 'w21', u: 2, h: '一', p: 'yī', en: 'One (1)', ar: 'واحد (١)', pos: 'Number', hook: 'Single horizontal stroke representing 1.', exH: '我有一个杯子。', exP: 'Wǒ yǒu yí gè bēizi.', exEn: 'I have one cup.', exAr: 'لدي كوب واحد.' },
+      { id: 'w22', u: 2, h: '二', p: 'èr', en: 'Two (2)', ar: 'اثنان (٢)', pos: 'Number', hook: 'Two horizontal strokes representing 2.', exH: '现在两点。', exP: 'Xiànzài liǎng diǎn.', exEn: 'It is 2 o’clock now.', exAr: 'الساعة الثانية الآن.' },
+      { id: 'w23', u: 2, h: '三', p: 'sān', en: 'Three (3)', ar: 'ثلاثة (٣)', pos: 'Number', hook: 'Three horizontal strokes representing 3.', exH: '我有三本书。', exP: 'Wǒ yǒu sān běn shū.', exEn: 'I have three books.', exAr: 'لدي ثلاثة كتب.' },
+      { id: 'w24', u: 2, h: '四', p: 'sì', en: 'Four (4)', ar: 'أربعة (٤)', pos: 'Number', hook: 'Enclosure 口 with two inner strokes.', exH: '今天星期四。', exP: 'Jīntiān xīngqīsì.', exEn: 'Today is Thursday.', exAr: 'اليوم هو الخميس.' },
+      { id: 'w25', u: 2, h: '五', p: 'wǔ', en: 'Five (5)', ar: 'خمسة (٥)', pos: 'Number', hook: 'Crossed strokes between top and bottom bars.', exH: '现在五点。', exP: 'Xiànzài wǔ diǎn.', exEn: 'It is 5 o’clock now.', exAr: 'الساعة الخامسة الآن.' },
+      { id: 'w26', u: 2, h: '六', p: 'liù', en: 'Six (6)', ar: 'ستة (٦)', pos: 'Number', hook: 'Top dot and horizontal bar over two legs.', exH: '我有六个朋友。', exP: 'Wǒ yǒu liù gè péngyou.', exEn: 'I have six friends.', exAr: 'لدي ستة أصدقاء.' },
+      { id: 'w27', u: 2, h: '七', p: 'qī', en: 'Seven (7)', ar: 'سبعة (٧)', pos: 'Number', hook: 'Crossed horizontal and curved vertical hook.', exH: '七月很热。', exP: 'Qīyuè hěn rè.', exEn: 'July is very hot.', exAr: 'شهر يوليو حار جداً.' },
+      { id: 'w28', u: 2, h: '八', p: 'bā', en: 'Eight (8)', ar: 'ثمانية (٨)', pos: 'Number', hook: 'Two strokes spreading outward — lucky number in China.', exH: '他八岁了。', exP: 'Tā bā suì le.', exEn: 'He is eight years old.', exAr: 'عمره ثماني سنوات.' },
+      { id: 'w29', u: 2, h: '九', p: 'jiǔ', en: 'Nine (9)', ar: 'تسعة (٩)', pos: 'Number', hook: 'Curved hook stroke representing 9.', exH: '九月九日。', exP: 'Jiǔyuè jiǔ rì.', exEn: 'September 9th.', exAr: 'التاسع من سبتمبر.' },
+      { id: 'w30', u: 2, h: '十', p: 'shí', en: 'Ten (10)', ar: 'عشرة (١٠)', pos: 'Number', hook: 'Cross shape representing 10.', exH: '十块钱。', exP: 'Shí kuài qián.', exEn: 'Ten yuan (money).', exAr: 'عشرة يوانات.' },
+      { id: 'w31', u: 2, h: '零', p: 'líng', en: 'Zero (0)', ar: 'صفر (٠)', pos: 'Number', hook: '雨 (rain radical) on top — drops falling like zero.', exH: '二零二六年。', exP: 'Èr líng èr liù nián.', exEn: 'Year 2026.', exAr: 'عام ٢٠٢٦.' },
+      { id: 'w32', u: 2, h: '个', p: 'gè', en: 'General measure word', ar: 'أداة تمييز عامة', pos: 'Measure', hook: 'Universal classifier used between numbers and nouns.', exH: '三个人。', exP: 'Sān gè rén.', exEn: 'Three people.', exAr: 'ثلاثة أشخاص.' },
+      { id: 'w33', u: 2, h: '岁', p: 'suì', en: 'Years old (age)', ar: 'سنة (للعمر)', pos: 'Measure', hook: '山 (mountain) on top — counting years of age.', exH: '你今年几岁？', exP: 'Nǐ jīnnián jǐ suì?', exEn: 'How old are you this year?', exAr: 'كم عمرك هذه السنة؟' },
+      { id: 'w34', u: 2, h: '本', p: 'běn', en: 'Measure word for books', ar: 'أداة تمييز للكتب', pos: 'Measure', hook: '木 (tree) with root mark — books are made from trees.', exH: '一本书。', exP: 'Yì běn shū.', exEn: 'One book.', exAr: 'كتاب واحد.' },
+      { id: 'w35', u: 2, h: '些', p: 'xiē', en: 'Some / A few', ar: 'بعض', pos: 'Measure', hook: 'Used in 一些 (some) and 这些 (these).', exH: '我买了一些水果。', exP: 'Wǒ mǎi le yìxiē shuǐguǒ.', exEn: 'I bought some fruit.', exAr: 'اشتريت بعض الفواكه.' },
+      { id: 'w36', u: 2, h: '块', p: 'kuài', en: 'Yuan (currency unit) / Piece', ar: 'يوان (عملة) / قطعة', pos: 'Measure', hook: '土 (earth) + 夬 — spoken unit for Chinese money (RMB).', exH: '五块钱。', exP: 'Wǔ kuài qián.', exEn: 'Five yuan.', exAr: 'خمسة يوانات.' },
+
+      // UNIT 3: Time, Dates & Calendar (14)
+      { id: 'w37', u: 3, h: '现在', p: 'xiànzài', en: 'Now', ar: 'الآن', pos: 'Noun', hook: 'Placed at the start of a sentence or right after the subject.', exH: '现在几点？', exP: 'Xiànzài jǐ diǎn?', exEn: 'What time is it now?', exAr: 'كم الساعة الآن؟' },
+      { id: 'w38', u: 3, h: '点', p: 'diǎn', en: 'O’clock / Dot', ar: 'الساعة (تماماً)', pos: 'Measure', hook: 'Four dots at the bottom — used for clock hours.', exH: '现在八点。', exP: 'Xiànzài bā diǎn.', exEn: 'It is 8 o’clock now.', exAr: 'الساعة الثامنة الآن.' },
+      { id: 'w39', u: 3, h: '分', p: 'fēn', en: 'Minute', ar: 'دقيقة', pos: 'Measure', hook: '八 (divide) over 刀 (knife) — dividing an hour into minutes.', exH: '九点十分。', exP: 'Jiǔ diǎn shí fēn.', exEn: '9:10 (nine ten).', exAr: 'التاسعة وعشر دقائق.' },
+      { id: 'w40', u: 3, h: '中午', p: 'zhōngwǔ', en: 'Noon / Midday', ar: 'الظهيرة', pos: 'Noun', hook: '中 (middle) + 午 (noon).', exH: '我中午吃米饭。', exP: 'Wǒ zhōngwǔ chī mǐfàn.', exEn: 'I eat rice at noon.', exAr: 'آكل الأرز في الظهيرة.' },
+      { id: 'w41', u: 3, h: '上午', p: 'shàngwǔ', en: 'Morning (before noon)', ar: 'الصباح', pos: 'Noun', hook: '上 (before/upper) + 午 (noon).', exH: '上午我去商店。', exP: 'Shàngwǔ wǒ qù shāngdiàn.', exEn: 'In the morning I go to the store.', exAr: 'في الصباح أذهب إلى المتجر.' },
+      { id: 'w42', u: 3, h: '下午', p: 'xiàwǔ', en: 'Afternoon', ar: 'بعد الظهر', pos: 'Noun', hook: '下 (after/lower) + 午 (noon).', exH: '下午我看书。', exP: 'Xiàwǔ wǒ kàn shū.', exEn: 'In the afternoon I read books.', exAr: 'بعد الظهر أقرأ الكتب.' },
+      { id: 'w43', u: 3, h: '今天', p: 'jīntiān', en: 'Today', ar: 'اليوم', pos: 'Noun', hook: '今 (present) + 天 (day).', exH: '今天很冷。', exP: 'Jīntiān hěn lěng.', exEn: 'Today is very cold.', exAr: 'اليوم بارد جداً.' },
+      { id: 'w44', u: 3, h: '明天', p: 'míngtiān', en: 'Tomorrow', ar: 'غداً', pos: 'Noun', hook: '明 (bright: 日 sun + 月 moon) + 天 (day) = next bright day.', exH: '明天见！', exP: 'Míngtiān jiàn!', exEn: 'See you tomorrow!', exAr: 'أراك غداً!' },
+      { id: 'w45', u: 3, h: '昨天', p: 'zuótiān', en: 'Yesterday', ar: 'أمس', pos: 'Noun', hook: '日 (sun radical) on left — past day.', exH: '昨天我没工作。', exP: 'Zuótiān wǒ méi gōngzuò.', exEn: 'Yesterday I did not work.', exAr: 'أمس لم أعمل.' },
+      { id: 'w46', u: 3, h: '年', p: 'nián', en: 'Year', ar: 'سنة / عام', pos: 'Noun', hook: 'Mandarin dates go big-to-small: Year → Month → Day.', exH: '今年是二零二六年。', exP: 'Jīnnián shì èr líng èr liù nián.', exEn: 'This year is 2026.', exAr: 'هذه السنة هي ٢٠٢٦.' },
+      { id: 'w47', u: 3, h: '月', p: 'yuè', en: 'Month / Moon', ar: 'شهر / قمر', pos: 'Noun', hook: 'Pictograph of a crescent moon.', exH: '一月很冷。', exP: 'Yīyuè hěn lěng.', exEn: 'January is very cold.', exAr: 'شهر يناير بارد جداً.' },
+      { id: 'w48', u: 3, h: '日', p: 'rì', en: 'Day / Sun', ar: 'يوم / شمس', pos: 'Noun', hook: 'Pictograph of the sun; used for calendar dates.', exH: '五月十日。', exP: 'Wǔyuè shí rì.', exEn: 'May 10th.', exAr: 'العاشر من مايو.' },
+      { id: 'w49', u: 3, h: '星期', p: 'xīngqī', en: 'Week', ar: 'أسبوع', pos: 'Noun', hook: '星期一 (Mon) through 星期六 (Sat), and 星期日/天 (Sun).', exH: '今天星期三。', exP: 'Jīntiān xīngqīsān.', exEn: 'Today is Wednesday.', exAr: 'اليوم هو الأربعاء.' },
+      { id: 'w50', u: 3, h: '时候', p: 'shíhou', en: 'Time / Moment (when)', ar: 'وقت / عندما', pos: 'Noun', hook: '什么时候 = "when?" (what time).', exH: '你什么时候回家？', exP: 'Nǐ shénme shíhou huí jiā?', exEn: 'When do you return home?', exAr: 'متى تعود إلى المنزل؟' },
+
+      // UNIT 4: Family & People (12)
+      { id: 'w51', u: 4, h: '家', p: 'jiā', en: 'Home / Family', ar: 'منزل / عائلة', pos: 'Noun', hook: '宀 (roof radical) over 豕 (pig) — wealth/livestock under a roof = home.', exH: '我在家。', exP: 'Wǒ zài jiā.', exEn: 'I am at home.', exAr: 'أنا في المنزل.' },
+      { id: 'w52', u: 4, h: '爸爸', p: 'bàba', en: 'Dad / Father', ar: 'أب / بابا', pos: 'Noun', hook: '父 (father) on top + 巴 phonetic.', exH: '我爸爸是医生。', exP: 'Wǒ bàba shì yīshēng.', exEn: 'My dad is a doctor.', exAr: 'أبي طبيب.' },
+      { id: 'w53', u: 4, h: '妈妈', p: 'māma', en: 'Mom / Mother', ar: 'أم / ماما', pos: 'Noun', hook: '女 (woman) + 马 (mǎ phonetic).', exH: '我爱妈妈。', exP: 'Wǒ ài māma.', exEn: 'I love Mom.', exAr: 'أنا أحب أمي.' },
+      { id: 'w54', u: 4, h: '儿子', p: 'érzi', en: 'Son', ar: 'ابن', pos: 'Noun', hook: '儿 (child/legs) + 子 (child).', exH: '他有三个儿子。', exP: 'Tā yǒu sān gè érzi.', exEn: 'He has three sons.', exAr: 'لديه ثلاثة أبناء.' },
+      { id: 'w55', u: 4, h: '女儿', p: 'nǚ’ér', en: 'Daughter', ar: 'ابنة', pos: 'Noun', hook: '女 (female) + 儿 (child).', exH: '这是我的女儿。', exP: 'Zhè shì wǒ de nǚ’ér.', exEn: 'This is my daughter.', exAr: 'هذه ابنتي.' },
+      { id: 'w56', u: 4, h: '先生', p: 'xiānsheng', en: 'Mr. / Sir / Husband', ar: 'سيد / أستاذ', pos: 'Noun', hook: 'Used after a surname: 王先生 (Mr. Wang).', exH: '王先生你好！', exP: 'Wáng xiānsheng nǐ hǎo!', exEn: 'Hello, Mr. Wang!', exAr: 'مرحباً سيد وانغ!' },
+      { id: 'w57', u: 4, h: '小姐', p: 'xiǎojiě', en: 'Miss / Young lady', ar: 'آنسة', pos: 'Noun', hook: '小 (small/young) + 姐 (older sister).', exH: '李小姐很漂亮。', exP: 'Lǐ xiǎojiě hěn piàoliang.', exEn: 'Miss Li is very pretty.', exAr: 'الآنسة لي جميلة جداً.' },
+      { id: 'w58', u: 4, h: '朋友', p: 'péngyou', en: 'Friend', ar: 'صديق', pos: 'Noun', hook: '朋 shows two moons side by side — companions together.', exH: '她是我的好朋友。', exP: 'Tā shì wǒ de hǎo péngyou.', exEn: 'She is my good friend.', exAr: 'هي صديقتي المقربة.' },
+      { id: 'w59', u: 4, h: '同学', p: 'tóngxué', en: 'Classmate', ar: 'زميل دراسة', pos: 'Noun', hook: '同 (same/together) + 学 (study) = study together.', exH: '我们是同学。', exP: 'Wǒmen shì tóngxué.', exEn: 'We are classmates.', exAr: 'نحن زملاء دراسة.' },
+      { id: 'w60', u: 4, h: '老师', p: 'lǎoshī', en: 'Teacher', ar: 'معلم / أستاذ', pos: 'Noun', hook: '老 (respected/senior) + 师 (master/teacher).', exH: '张老师教汉语。', exP: 'Zhāng lǎoshī jiāo Hànyǔ.', exEn: 'Teacher Zhang teaches Chinese.', exAr: 'الأستاذ تشانغ يعلّم اللغة الصينية.' },
+      { id: 'w61', u: 4, h: '学生', p: 'xuéshēng', en: 'Student', ar: 'طالب', pos: 'Noun', hook: '学 (study) + 生 (person/life).', exH: '我是大学生。', exP: 'Wǒ shì dàxuéshēng.', exEn: 'I am a university student.', exAr: 'أنا طالب جامعي.' },
+      { id: 'w62', u: 4, h: '医生', p: 'yīshēng', en: 'Doctor', ar: 'طبيب', pos: 'Noun', hook: '医 (medicine) + 生 (person).', exH: '他在医院做医生。', exP: 'Tā zài yīyuàn zuò yīshēng.', exEn: 'He works as a doctor at the hospital.', exAr: 'يعمل طبيباً في المستشفى.' },
+
+      // UNIT 5: Food, Drink & Dining (12)
+      { id: 'w63', u: 5, h: '水', p: 'shuǐ', en: 'Water', ar: 'ماء', pos: 'Noun', hook: 'Pictograph of flowing water streams.', exH: '我想喝水。', exP: 'Wǒ xiǎng hē shuǐ.', exEn: 'I want to drink water.', exAr: 'أريد أن أشرب الماء.' },
+      { id: 'w64', u: 5, h: '茶', p: 'chá', en: 'Tea', ar: 'شاي', pos: 'Noun', hook: '艹 (grass/plant radical) on top + 人 (person) + 木 (tree).', exH: '请喝茶！', exP: 'Qǐng hē chá!', exEn: 'Please drink some tea!', exAr: 'تفضل بشرب الشاي!' },
+      { id: 'w65', u: 5, h: '米饭', p: 'mǐfàn', en: 'Cooked rice', ar: 'أرز مطبوخ', pos: 'Noun', hook: '米 (rice grains) + 饭 (meal/food).', exH: '我喜欢吃米饭。', exP: 'Wǒ xǐhuan chī mǐfàn.', exEn: 'I like eating rice.', exAr: 'أحب أكل الأرز.' },
+      { id: 'w66', u: 5, h: '菜', p: 'cài', en: 'Dish / Vegetable / Cuisine', ar: 'طبق طعام / خضار', pos: 'Noun', hook: '艹 (plant radical) on top; 中国菜 = Chinese food.', exH: '中国菜很好吃。', exP: 'Zhōngguó cài hěn hǎochī.', exEn: 'Chinese food is delicious.', exAr: 'الطعام الصيني لذيذ جداً.' },
+      { id: 'w67', u: 5, h: '水果', p: 'shuǐguǒ', en: 'Fruit', ar: 'فاكهة', pos: 'Noun', hook: '水 (water/juicy) + 果 (fruit on a tree).', exH: '我想买水果。', exP: 'Wǒ xiǎng mǎi shuǐguǒ.', exEn: 'I want to buy fruit.', exAr: 'أريد شراء الفاكهة.' },
+      { id: 'w68', u: 5, h: '苹果', p: 'píngguǒ', en: 'Apple', ar: 'تفاحة', pos: 'Noun', hook: '艹 (plant radical) + 平 (píng phonetic) + 果 (fruit).', exH: '这个苹果很大。', exP: 'Zhège píngguǒ hěn dà.', exEn: 'This apple is very big.', exAr: 'هذه التفاحة كبيرة جداً.' },
+      { id: 'w69', u: 5, h: '杯子', p: 'bēizi', en: 'Cup / Glass', ar: 'كوب / كأس', pos: 'Noun', hook: '木 (wood radical) on left — originally wooden cups.', exH: '桌子上有一个杯子。', exP: 'Zhuōzi shàng yǒu yí gè bēizi.', exEn: 'There is a cup on the table.', exAr: 'يوجد كوب على الطاولة.' },
+      { id: 'w70', u: 5, h: '吃', p: 'chī', en: 'To eat', ar: 'يأكل', pos: 'Verb', hook: '口 (mouth radical) on left — eating with the mouth.', exH: '你吃什么？', exP: 'Nǐ chī shénme?', exEn: 'What are you eating?', exAr: 'ماذا تأكل؟' },
+      { id: 'w71', u: 5, h: '喝', p: 'hē', en: 'To drink', ar: 'يشرب', pos: 'Verb', hook: '口 (mouth radical) on left — drinking with the mouth.', exH: '我喝茶，不喝水。', exP: 'Wǒ hē chá, bù hē shuǐ.', exEn: 'I drink tea, not water.', exAr: 'أشرب الشاي، لا أشرب الماء.' },
+      { id: 'w72', u: 5, h: '饭店', p: 'fàndiàn', en: 'Restaurant / Hotel', ar: 'مطعم / فندق', pos: 'Noun', hook: '饭 (meal) + 店 (shop) = place serving meals.', exH: '我们在饭店吃饭。', exP: 'Wǒmen zài fàndiàn chīfàn.', exEn: 'We eat at the restaurant.', exAr: 'نحن نأكل في المطعم.' },
+      { id: 'w73', u: 5, h: '饿', p: 'è', en: 'Hungry', ar: 'جائع', pos: 'Adjective', hook: '饣(food radical) on left + 我 (wǒ phonetic).', exH: '我饿了，想吃饭。', exP: 'Wǒ è le, xiǎng chīfàn.', exEn: 'I’m hungry and want to eat.', exAr: 'أنا جائع وأريد أن آكل.' },
+      { id: 'w74', u: 5, h: '渴', p: 'kě', en: 'Thirsty', ar: 'عطشان', pos: 'Adjective', hook: '氵(water radical) on left — needing water.', exH: '我很渴，想喝水。', exP: 'Wǒ hěn kě, xiǎng hē shuǐ.', exEn: 'I am very thirsty and want water.', exAr: 'أنا عطشان جداً وأريد ماءً.' },
+
+      // UNIT 6: Places & Locations (13)
+      { id: 'w75', u: 6, h: '中国', p: 'Zhōngguó', en: 'China', ar: 'الصين', pos: 'Noun', hook: '中 (middle) + 国 (country) = "Middle Kingdom."', exH: '我在中国学习。', exP: 'Wǒ zài Zhōngguó xuéxí.', exEn: 'I study in China.', exAr: 'أدرس في الصين.' },
+      { id: 'w76', u: 6, h: '北京', p: 'Běijīng', en: 'Beijing', ar: 'بكين', pos: 'Noun', hook: '北 (north) + 京 (capital) = "Northern Capital."', exH: '北京很漂亮。', exP: 'Běijīng hěn piàoliang.', exEn: 'Beijing is very beautiful.', exAr: 'بكين جميلة جداً.' },
+      { id: 'w77', u: 6, h: '学校', p: 'xuéxiào', en: 'School', ar: 'مدرسة', pos: 'Noun', hook: '学 (study) + 校 (campus/school).', exH: '这是我们的学校。', exP: 'Zhè shì wǒmen de xuéxiào.', exEn: 'This is our school.', exAr: 'هذه مدرستنا.' },
+      { id: 'w78', u: 6, h: '医院', p: 'yīyuàn', en: 'Hospital', ar: 'مستشفى', pos: 'Noun', hook: '医 (medical) + 院 (courtyard/institution).', exH: '他在医院工作。', exP: 'Tā zài yīyuàn gōngzuò.', exEn: 'He works at the hospital.', exAr: 'هو يعمل في المستشفى.' },
+      { id: 'w79', u: 6, h: '商店', p: 'shāngdiàn', en: 'Shop / Store', ar: 'متجر / دكان', pos: 'Noun', hook: '商 (commerce) + 店 (shop).', exH: '我去商店买衣服。', exP: 'Wǒ qù shāngdiàn mǎi yīfu.', exEn: 'I go to the store to buy clothes.', exAr: 'أذهب إلى المتجر لشراء الملابس.' },
+      { id: 'w80', u: 6, h: '火车站', p: 'huǒchēzhàn', en: 'Train station', ar: 'محطة القطار', pos: 'Noun', hook: '火 (fire) + 车 (vehicle) + 站 (station).', exH: '火车站在哪儿？', exP: 'Huǒchēzhàn zài nǎr?', exEn: 'Where is the train station?', exAr: 'أين محطة القطار؟' },
+      { id: 'w81', u: 6, h: '飞机场', p: 'fēijīchǎng', en: 'Airport', ar: 'مطار', pos: 'Noun', hook: '飞机 (airplane) + 场 (open field/ground).', exH: '我去飞机场。', exP: 'Wǒ qù fēijīchǎng.', exEn: 'I am going to the airport.', exAr: 'أنا ذاهب إلى المطار.' },
+      { id: 'w82', u: 6, h: '家里', p: 'jiālǐ', en: 'At home / Inside the house', ar: 'في المنزل / داخل البيت', pos: 'Noun', hook: '家 (home) + 里 (inside).', exH: '妈妈在家里。', exP: 'Māma zài jiālǐ.', exEn: 'Mom is at home.', exAr: 'أمي في المنزل.' },
+      { id: 'w83', u: 6, h: '前面', p: 'qiánmiàn', en: 'In front / Ahead', ar: 'أمام', pos: 'Noun', hook: '前 (front) + 面 (side/face).', exH: '学校在前面。', exP: 'Xuéxiào zài qiánmiàn.', exEn: 'The school is ahead.', exAr: 'المدرسة في الأمام.' },
+      { id: 'w84', u: 6, h: '后面', p: 'hòumiàn', en: 'Behind / Back', ar: 'خلف / وراء', pos: 'Noun', hook: '后 (back/after) + 面 (side).', exH: '商店在医院后面。', exP: 'Shāngdiàn zài yīyuàn hòumiàn.', exEn: 'The store is behind the hospital.', exAr: 'المتجر خلف المستشفى.' },
+      { id: 'w85', u: 6, h: '里面', p: 'lǐmiàn', en: 'Inside', ar: 'داخل', pos: 'Noun', hook: '里 (inner) + 面 (side).', exH: '猫在房间里面。', exP: 'Māo zài fángjiān lǐmiàn.', exEn: 'The cat is inside the room.', exAr: 'القطة داخل الغرفة.' },
+      { id: 'w86', u: 6, h: '上面', p: 'shàngmiàn', en: 'On top / Above', ar: 'فوق / أعلى', pos: 'Noun', hook: '上 (up/top) + 面 (surface).', exH: '书在桌子上面。', exP: 'Shū zài zhuōzi shàngmiàn.', exEn: 'The book is on top of the table.', exAr: 'الكتاب فوق الطاولة.' },
+      { id: 'w87', u: 6, h: '下面', p: 'xiàmiàn', en: 'Under / Below', ar: 'تحت / أسفل', pos: 'Noun', hook: '下 (down/under) + 面 (surface).', exH: '小狗在椅子下面。', exP: 'Xiǎogǒu zài yǐzi xiàmiàn.', exEn: 'The puppy is under the chair.', exAr: 'الجرو تحت الكرسي.' },
+
+      // UNIT 7: Transport & Directions (11)
+      { id: 'w88', u: 7, h: '去', p: 'qù', en: 'To go', ar: 'يذهب', pos: 'Verb', hook: '去 + Place: 去北京 (go to Beijing).', exH: '明天我去北京。', exP: 'Míngtiān wǒ qù Běijīng.', exEn: 'Tomorrow I go to Beijing.', exAr: 'غداً أذهب إلى بكين.' },
+      { id: 'w89', u: 7, h: '来', p: 'lái', en: 'To come', ar: 'يأتي', pos: 'Verb', hook: 'Opposite of 去 (go) — movement toward the speaker.', exH: '他来我家了。', exP: 'Tā lái wǒ jiā le.', exEn: 'He came to my home.', exAr: 'لقد أتى إلى منزلي.' },
+      { id: 'w90', u: 7, h: '回', p: 'huí', en: 'To return / Go back', ar: 'يعود / يرجع', pos: 'Verb', hook: 'Box inside a box — returning back to origin.', exH: '我五点回家。', exP: 'Wǒ wǔ diǎn huí jiā.', exEn: 'I return home at 5 o’clock.', exAr: 'أعود إلى المنزل الساعة الخامسة.' },
+      { id: 'w91', u: 7, h: '出租车', p: 'chūzūchē', en: 'Taxi', ar: 'سيارة أجرة (تاكسي)', pos: 'Noun', hook: '出租 (for rent) + 车 (car).', exH: '我们坐出租车去。', exP: 'Wǒmen zuò chūzūchē qù.', exEn: 'We go by taxi.', exAr: 'نذهب بالتاكسي.' },
+      { id: 'w92', u: 7, h: '飞机', p: 'fēijī', en: 'Airplane', ar: 'طائرة', pos: 'Noun', hook: '飞 (fly) + 机 (machine) = flying machine.', exH: '我坐飞机去中国。', exP: 'Wǒ zuò fēijī qù Zhōngguó.', exEn: 'I take an airplane to China.', exAr: 'أسافر بالطائرة إلى الصين.' },
+      { id: 'w93', u: 7, h: '开', p: 'kāi', en: 'To drive / To open / Turn on', ar: 'يقود / يفتح', pos: 'Verb', hook: '开车 (drive a car), 开门 (open a door).', exH: '爸爸会开车。', exP: 'Bàba huì kāichē.', exEn: 'Dad knows how to drive.', exAr: 'أبي يعرف قيادة السيارة.' },
+      { id: 'w94', u: 7, h: '坐', p: 'zuò', en: 'To sit / To travel by', ar: 'يجلس / يستقل', pos: 'Verb', hook: 'Two 人 (people) sitting on 土 (ground).', exH: '请坐！', exP: 'Qǐng zuò!', exEn: 'Please sit down!', exAr: 'تفضل بالجلوس!' },
+      { id: 'w95', u: 7, h: '走', p: 'zǒu', en: 'To walk / To leave', ar: 'يمشي / يغادر', pos: 'Verb', hook: '土 (earth) over foot — walking on the ground.', exH: '我们走吧！', exP: 'Wǒmen zǒu ba!', exEn: 'Let’s go / walk!', exAr: 'هيا نمشي / لنذهب!' },
+      { id: 'w96', u: 7, h: '路', p: 'lù', en: 'Road / Street / Route', ar: 'طريق / شارع', pos: 'Noun', hook: '足 (foot radical) on left — path walked by feet.', exH: '这是去学校的路。', exP: 'Zhè shì qù xuéxiào de lù.', exEn: 'This is the road to school.', exAr: 'هذا هو الطريق إلى المدرسة.' },
+      { id: 'w97', u: 7, h: '远', p: 'yuǎn', en: 'Far', ar: 'بعيد', pos: 'Adjective', hook: '辶 (walking radical) — a long walk away.', exH: '飞机场很远。', exP: 'Fēijīchǎng hěn yuǎn.', exEn: 'The airport is very far.', exAr: 'المطار بعيد جداً.' },
+      { id: 'w98', u: 7, h: '近', p: 'jìn', en: 'Near / Close', ar: 'قريب', pos: 'Adjective', hook: '辶 (walking radical) + 斤 (jīn phonetic).', exH: '商店离我家很近。', exP: 'Shāngdiàn lí wǒ jiā hěn jìn.', exEn: 'The store is very close to my home.', exAr: 'المتجر قريب جداً من منزلي.' },
+
+      // UNIT 8: Shopping, Money & Objects (13)
+      { id: 'w99', u: 8, h: '钱', p: 'qián', en: 'Money', ar: 'نقود / مال', pos: 'Noun', hook: '钅(metal radical) on left — coins made of metal.', exH: '我有十块钱。', exP: 'Wǒ yǒu shí kuài qián.', exEn: 'I have ten yuan.', exAr: 'لدي عشرة يوانات.' },
+      { id: 'w100', u: 8, h: '买', p: 'mǎi', en: 'To buy', ar: 'يشتري', pos: 'Verb', hook: 'Opposite of 卖 (mài, to sell).', exH: '我想买一本书。', exP: 'Wǒ xiǎng mǎi yì běn shū.', exEn: 'I want to buy a book.', exAr: 'أريد شراء كتاب.' },
+      { id: 'w101', u: 8, h: '东西', p: 'dōngxi', en: 'Thing / Stuff', ar: 'شيء / أغراض', pos: 'Noun', hook: '东 (east) + 西 (west) = things from everywhere.', exH: '她买了很多东西。', exP: 'Tā mǎi le hěn duō dōngxi.', exEn: 'She bought many things.', exAr: 'اشترت أشياء كثيرة.' },
+      { id: 'w102', u: 8, h: '衣服', p: 'yīfu', en: 'Clothes', ar: 'ملابس', pos: 'Noun', hook: '衣 (clothing) + 服 (garment).', exH: '这件衣服很漂亮。', exP: 'Zhè jiàn yīfu hěn piàoliang.', exEn: 'This piece of clothing is pretty.', exAr: 'هذه الملابس جميلة جداً.' },
+      { id: 'w103', u: 8, h: '电脑', p: 'diànnǎo', en: 'Computer', ar: 'حاسوب / كمبيوتر', pos: 'Noun', hook: '电 (electric) + 脑 (brain) = "electric brain."', exH: '我有新电脑。', exP: 'Wǒ yǒu xīn diànnǎo.', exEn: 'I have a new computer.', exAr: 'لدي حاسوب جديد.' },
+      { id: 'w104', u: 8, h: '电视', p: 'diànshì', en: 'Television', ar: 'تلفاز', pos: 'Noun', hook: '电 (electric) + 视 (vision/view).', exH: '爸爸在看电视。', exP: 'Bàba zài kàn diànshì.', exEn: 'Dad is watching TV.', exAr: 'أبي يشاهد التلفاز.' },
+      { id: 'w105', u: 8, h: '电影', p: 'diànyǐng', en: 'Movie / Film', ar: 'فيلم', pos: 'Noun', hook: '电 (electric) + 影 (shadow/image).', exH: '我喜欢看电影。', exP: 'Wǒ xǐhuan kàn diànyǐng.', exEn: 'I like watching movies.', exAr: 'أحب مشاهدة الأفلام.' },
+      { id: 'w106', u: 8, h: '手机', p: 'shǒujī', en: 'Mobile phone', ar: 'هاتف محمول', pos: 'Noun', hook: '手 (hand) + 机 (machine) = handheld device.', exH: '这是我的手机。', exP: 'Zhè shì wǒ de shǒujī.', exEn: 'This is my mobile phone.', exAr: 'هذا هاتفي المحمول.' },
+      { id: 'w107', u: 8, h: '书', p: 'shū', en: 'Book', ar: 'كتاب', pos: 'Noun', hook: 'Simplified shape of stacked pages with a bookmark.', exH: '我爱看书。', exP: 'Wǒ ài kàn shū.', exEn: 'I love reading books.', exAr: 'أحب قراءة الكتب.' },
+      { id: 'w108', u: 8, h: '桌子', p: 'zhuōzi', en: 'Table / Desk', ar: 'طاولة / مكتب', pos: 'Noun', hook: '木 (wood) at bottom — wooden furniture.', exH: '桌子上有电脑。', exP: 'Zhuōzi shàng yǒu diànnǎo.', exEn: 'There is a computer on the desk.', exAr: 'يوجد حاسوب على الطاولة.' },
+      { id: 'w109', u: 8, h: '椅子', p: 'yǐzi', en: 'Chair', ar: 'كرسي', pos: 'Noun', hook: '木 (wood radical) on left + 奇 (qí phonetic).', exH: '椅子很小。', exP: 'Yǐzi hěn xiǎo.', exEn: 'The chair is very small.', exAr: 'الكرسي صغير جداً.' },
+      { id: 'w110', u: 8, h: '猫', p: 'māo', en: 'Cat', ar: 'قطة', pos: 'Noun', hook: '犭(animal radical) on left + 苗 (miáo sound like meow).', exH: '我有一只小猫。', exP: 'Wǒ yǒu yì zhī xiǎomāo.', exEn: 'I have a little cat.', exAr: 'لدي قطة صغيرة.' },
+      { id: 'w111', u: 8, h: '狗', p: 'gǒu', en: 'Dog', ar: 'كلب', pos: 'Noun', hook: '犭(animal radical) on left + 句 (jù).', exH: '他喜欢小狗。', exP: 'Tā xǐhuan xiǎogǒu.', exEn: 'He likes puppies.', exAr: 'هو يحب الكلاب الصغيرة.' },
+
+      // UNIT 9: Daily Verbs & Actions (23)
+      { id: 'w112', u: 9, h: '是', p: 'shì', en: 'To be (am / is / are)', ar: 'يكون (فعل الكينونة)', pos: 'Verb', hook: 'Links Noun + Noun (never conjugates for person or tense).', exH: '我是老师。', exP: 'Wǒ shì lǎoshī.', exEn: 'I am a teacher.', exAr: 'أنا معلم.' },
+      { id: 'w113', u: 9, h: '有', p: 'yǒu', en: 'To have / There is', ar: 'يملك / يوجد', pos: 'Verb', hook: 'Always negated with 没 (没有), never 不!', exH: '我没有钱。', exP: 'Wǒ méiyǒu qián.', exEn: 'I don’t have money.', exAr: 'ليس لدي نقود.' },
+      { id: 'w114', u: 9, h: '在', p: 'zài', en: 'To be at / in / on', ar: 'يوجد في / في', pos: 'Verb', hook: 'Indicates location of a person or thing.', exH: '我在学校。', exP: 'Wǒ zài xuéxiào.', exEn: 'I am at school.', exAr: 'أنا في المدرسة.' },
+      { id: 'w115', u: 9, h: '看', p: 'kàn', en: 'To look / To watch / To read', ar: 'ينظر / يشاهد / يقرأ', pos: 'Verb', hook: '手 (hand) shading 目 (eye) to look into the distance.', exH: '我看书。', exP: 'Wǒ kàn shū.', exEn: 'I read a book.', exAr: 'أقرأ كتاباً.' },
+      { id: 'w116', u: 9, h: '听', p: 'tīng', en: 'To listen', ar: 'يستمع', pos: 'Verb', hook: '口 (mouth) + 斤 — listening carefully.', exH: '我喜欢听音乐。', exP: 'Wǒ xǐhuan tīng yīnyuè.', exEn: 'I like listening to music.', exAr: 'أحب الاستماع إلى الموسيقى.' },
+      { id: 'w117', u: 9, h: '说话', p: 'shuōhuà', en: 'To speak / To talk', ar: 'يتحدث / يتكلم', pos: 'Verb', hook: '说 (speak) + 话 (words/speech).', exH: '请不要说话。', exP: 'Qǐng búyào shuōhuà.', exEn: 'Please do not talk.', exAr: 'من فضلك لا تتحدث.' },
+      { id: 'w118', u: 9, h: '读', p: 'dú', en: 'To read aloud / Study', ar: 'يقرأ بصوت / يدرس', pos: 'Verb', hook: '讠(speech radical) on left — reading out loud.', exH: '我读汉语书。', exP: 'Wǒ dú Hànyǔ shū.', exEn: 'I read a Chinese book.', exAr: 'أقرأ كتاب اللغة الصينية.' },
+      { id: 'w119', u: 9, h: '写', p: 'xiě', en: 'To write', ar: 'يكتب', pos: 'Verb', hook: '写汉字 (write Chinese characters).', exH: '我会写汉字。', exP: 'Wǒ huì xiě Hànzì.', exEn: 'I can write Chinese characters.', exAr: 'أستطيع كتابة الحروف الصينية.' },
+      { id: 'w120', u: 9, h: '看见', p: 'kànjiàn', en: 'To see (result)', ar: 'يرى', pos: 'Verb', hook: '看 (look) + 见 (perceive) = actually seeing something.', exH: '我看见他了。', exP: 'Wǒ kànjiàn tā le.', exEn: 'I saw him.', exAr: 'لقد رأيته.' },
+      { id: 'w121', u: 9, h: '听见', p: 'tīngjiàn', en: 'To hear (result)', ar: 'يسمع', pos: 'Verb', hook: '听 (listen) + 见 (perceive) = hearing a sound.', exH: '你听见了吗？', exP: 'Nǐ tīngjiàn le ma?', exEn: 'Did you hear that?', exAr: 'هل سمعت ذلك؟' },
+      { id: 'w122', u: 9, h: '叫', p: 'jiào', en: 'To be called / To call', ar: 'يُدعى / ينادي', pos: 'Verb', hook: '口 (mouth radical) on left — calling out a name.', exH: '我叫李明。', exP: 'Wǒ jiào Lǐ Míng.', exEn: 'My name is Li Ming.', exAr: 'اسمي لي مينغ.' },
+      { id: 'w123', u: 9, h: '认识', p: 'rènshi', en: 'To know / Meet (someone)', ar: 'يتعرف على / يعرف', pos: 'Verb', hook: 'Both characters carry 讠(speech radical).', exH: '认识你很高兴！', exP: 'Rènshi nǐ hěn gāoxìng!', exEn: 'Nice to meet you!', exAr: 'سعيد بالتعرف إليك!' },
+      { id: 'w124', u: 9, h: '爱', p: 'ài', en: 'To love', ar: 'يحب (بعمق)', pos: 'Verb', hook: 'Claw + cover + friend — caring deeply.', exH: '我爱中国。', exP: 'Wǒ ài Zhōngguó.', exEn: 'I love China.', exAr: 'أنا أحب الصين.' },
+      { id: 'w125', u: 9, h: '喜欢', p: 'xǐhuan', en: 'To like', ar: 'يحب / يعجب بـ', pos: 'Verb', hook: '喜 (joy/happiness) + 欢 (cheerful).', exH: '我喜欢喝茶。', exP: 'Wǒ xǐhuan hē chá.', exEn: 'I like drinking tea.', exAr: 'أحب شرب الشاي.' },
+      { id: 'w126', u: 9, h: '想', p: 'xiǎng', en: 'To want / To think / To miss', ar: 'يريد / يفكر / يشتاق', pos: 'Verb', hook: '相 (appearance) over 心 (heart) — picturing in one’s heart.', exH: '我想去中国。', exP: 'Wǒ xiǎng qù Zhōngguó.', exEn: 'I want to go to China.', exAr: 'أريد الذهاب إلى الصين.' },
+      { id: 'w127', u: 9, h: '会', p: 'huì', en: 'Can (learned skill) / Will', ar: 'يستطيع (مهارة مكتسبة)', pos: 'Verb', hook: 'Used for acquired skills like speaking a language or driving.', exH: '我会说汉语。', exP: 'Wǒ huì shuō Hànyǔ.', exEn: 'I can speak Mandarin Chinese.', exAr: 'أستطيع التحدث بالصينية.' },
+      { id: 'w128', u: 9, h: '能', p: 'néng', en: 'Can / Be able to (permission/ability)', ar: 'يقدر / يمكن', pos: 'Verb', hook: 'Used for physical ability or polite permission.', exH: '我能坐这儿吗？', exP: 'Wǒ néng zuò zhèr ma?', exEn: 'May I sit here?', exAr: 'هل يمكنني الجلوس هنا؟' },
+      { id: 'w129', u: 9, h: '睡觉', p: 'shuìjiào', en: 'To sleep', ar: 'ينام', pos: 'Verb', hook: '睡 has 目 (eye radical) — closing eyes to sleep.', exH: '我十点睡觉。', exP: 'Wǒ shí diǎn shuìjiào.', exEn: 'I go to sleep at 10 o’clock.', exAr: 'أنام في الساعة العاشرة.' },
+      { id: 'w130', u: 9, h: '打电话', p: 'dǎ diànhuà', en: 'To make a phone call', ar: 'يتصل هاتفياً', pos: 'Verb', hook: '打 (hit/dial) + 电话 (telephone).', exH: '我在打电话。', exP: 'Wǒ zài dǎ diànhuà.', exEn: 'I am making a phone call.', exAr: 'أنا أجري مكالمة هاتفية.' },
+      { id: 'w131', u: 9, h: '工作', p: 'gōngzuò', en: 'To work / Job', ar: 'يعمل / عمل', pos: 'Verb', hook: '工 (labor/tool) + 作 (do/make).', exH: '我爸爸在北京工作。', exP: 'Wǒ bàba zài Běijīng gōngzuò.', exEn: 'My dad works in Beijing.', exAr: 'أبي يعمل في بكين.' },
+      { id: 'w132', u: 9, h: '学习', p: 'xuéxí', en: 'To study / To learn', ar: 'يدرس / يتعلم', pos: 'Verb', hook: '学 (study) + 习 (practice repeatedly).', exH: '我喜欢学习汉语。', exP: 'Wǒ xǐhuan xuéxí Hànyǔ.', exEn: 'I like studying Mandarin.', exAr: 'أحب دراسة اللغة الصينية.' },
+      { id: 'w133', u: 9, h: '做', p: 'zuò', en: 'To do / To make', ar: 'يفعل / يصنع', pos: 'Verb', hook: '亻(person radical) on left — human action.', exH: '你在做什么？', exP: 'Nǐ zài zuò shénme?', exEn: 'What are you doing?', exAr: 'ماذا تفعل؟' },
+      { id: 'w134', u: 9, h: '住', p: 'zhù', en: 'To live / To reside', ar: 'يسكن / يعيش', pos: 'Verb', hook: '亻(person) + 主 (master/host) = residing in a home.', exH: '我住在北京。', exP: 'Wǒ zhù zài Běijīng.', exEn: 'I live in Beijing.', exAr: 'أسكن في بكين.' },
+
+      // UNIT 10: Adjectives & States (11)
+      { id: 'w135', u: 10, h: '好', p: 'hǎo', en: 'Good / Well', ar: 'جيد / بخير', pos: 'Adjective', hook: '女 (woman) + 子 (child) = goodness and harmony.', exH: '我很好。', exP: 'Wǒ hěn hǎo.', exEn: 'I am very well.', exAr: 'أنا بخير جداً.' },
+      { id: 'w136', u: 10, h: '大', p: 'dà', en: 'Big / Large', ar: 'كبير', pos: 'Adjective', hook: 'Person stretching both arms wide.', exH: '这个学校很大。', exP: 'Zhège xuéxiào hěn dà.', exEn: 'This school is very big.', exAr: 'هذه المدرسة كبيرة جداً.' },
+      { id: 'w137', u: 10, h: '小', p: 'xiǎo', en: 'Small / Little', ar: 'صغير', pos: 'Adjective', hook: 'Three tiny dots/strokes representing smallness.', exH: '小猫很可爱。', exP: 'Xiǎomāo hěn kě’ài.', exEn: 'The little cat is cute.', exAr: 'القطة الصغيرة لطيفة.' },
+      { id: 'w138', u: 10, h: '多', p: 'duō', en: 'Many / Much', ar: 'كثير', pos: 'Adjective', hook: 'Two 夕 (crescent moons) stacked = plentiful.', exH: '这里人很多。', exP: 'Zhèlǐ rén hěn duō.', exEn: 'There are many people here.', exAr: 'يوجد الكثير من الناس هنا.' },
+      { id: 'w139', u: 10, h: '少', p: 'shǎo', en: 'Few / Little', ar: 'قليل', pos: 'Adjective', hook: '小 (small) with a diagonal slash — scarce.', exH: '我喝水很少。', exP: 'Wǒ hē shuǐ hěn shǎo.', exEn: 'I drink very little water.', exAr: 'أشرب القليل من الماء.' },
+      { id: 'w140', u: 10, h: '冷', p: 'lěng', en: 'Cold', ar: 'بارد', pos: 'Adjective', hook: '冫(two-dot ice radical) on left — icy cold.', exH: '今天太冷了！', exP: 'Jīntiān tài lěng le!', exEn: 'Today is too cold!', exAr: 'اليوم بارد جداً!' },
+      { id: 'w141', u: 10, h: '热', p: 'rè', en: 'Hot', ar: 'حار', pos: 'Adjective', hook: '灬 (four-dot fire radical) at bottom — heat/fire.', exH: '北京夏天很热。', exP: 'Běijīng xiàtiān hěn rè.', exEn: 'Beijing summer is very hot.', exAr: 'الصيف في بكين حار جداً.' },
+      { id: 'w142', u: 10, h: '高兴', p: 'gāoxìng', en: 'Happy / Glad', ar: 'سعيد / مسرور', pos: 'Adjective', hook: '高 (high) + 兴 (spirits) = high spirits.', exH: '我今天很高兴。', exP: 'Wǒ jīntiān hěn gāoxìng.', exEn: 'I am very happy today.', exAr: 'أنا سعيد جداً اليوم.' },
+      { id: 'w143', u: 10, h: '漂亮', p: 'piàoliang', en: 'Pretty / Beautiful', ar: 'جميل', pos: 'Adjective', hook: '氵(water) + 票 + 亮 (bright/shining).', exH: '你的衣服很漂亮。', exP: 'Nǐ de yīfu hěn piàoliang.', exEn: 'Your clothes are very pretty.', exAr: 'ملابسك جميلة جداً.' },
+      { id: 'w144', u: 10, h: '好听', p: 'hǎotīng', en: 'Pleasant to hear / Melodious', ar: 'جميل الصوت / عذب', pos: 'Adjective', hook: '好 (good) + 听 (listen) = good to listen to.', exH: '这首歌很好听。', exP: 'Zhè shǒu gē hěn hǎotīng.', exEn: 'This song sounds very nice.', exAr: 'هذه الأغنية جميلة جداً.' },
+      { id: 'w145', u: 10, h: '好看', p: 'hǎokàn', en: 'Good-looking / Interesting to watch', ar: 'جميل المنظر / ممتع', pos: 'Adjective', hook: '好 (good) + 看 (look/watch) = good to look at.', exH: '这个电影很好看。', exP: 'Zhège diànyǐng hěn hǎokàn.', exEn: 'This movie is really good.', exAr: 'هذا الفيلم ممتع جداً.' },
+
+      // UNIT 11: Weather & Nature (4)
+      { id: 'w146', u: 11, h: '天气', p: 'tiānqì', en: 'Weather', ar: 'الطقس', pos: 'Noun', hook: '天 (sky/heaven) + 气 (air/breath) = sky atmosphere.', exH: '今天天气很好。', exP: 'Jīntiān tiānqì hěn hǎo.', exEn: 'Today’s weather is very good.', exAr: 'الطقس اليوم جميل جداً.' },
+      { id: 'w147', u: 11, h: '下雨', p: 'xiàyǔ', en: 'To rain', ar: 'تمطر', pos: 'Verb', hook: '下 (fall down) + 雨 (raindrops in a window).', exH: '明天会下雨吗？', exP: 'Míngtiān huì xiàyǔ ma?', exEn: 'Will it rain tomorrow?', exAr: 'هل ستمطر غداً؟' },
+      { id: 'w148', u: 11, h: '太阳', p: 'tàiyáng', en: 'Sun', ar: 'الشمس', pos: 'Noun', hook: '太 (great) + 阳 (yang/sunlight).', exH: '今天有太阳。', exP: 'Jīntiān yǒu tàiyáng.', exEn: 'The sun is out today.', exAr: 'الشمس مشرقة اليوم.' },
+      { id: 'w149', u: 11, h: '月亮', p: 'yuèliang', en: 'Moon', ar: 'القمر', pos: 'Noun', hook: '月 (moon) + 亮 (bright).', exH: '今晚月亮很圆。', exP: 'Jīnwǎn yuèliang hěn yuán.', exEn: 'Tonight the moon is very round.', exAr: 'القمر مكتمل الليلة.' },
+
+      // UNIT 12: Grammar Particles & Connectors (6 + key particles)
+      { id: 'w150', u: 12, h: '的', p: 'de', en: 'Possessive / Descriptive particle', ar: 'أداة الملكية والوصف', pos: 'Particle', hook: 'Links owner + noun: 我的书 (my book).', exH: '这是妈妈的杯子。', exP: 'Zhè shì māma de bēizi.', exEn: 'This is Mom’s cup.', exAr: 'هذا كوب أمي.' },
+      { id: 'w151', u: 12, h: '了', p: 'le', en: 'Completed action / Change of state', ar: 'أداة إتمام الفعل أو تغير الحال', pos: 'Particle', hook: 'Placed after a verb or at sentence end.', exH: '我买了三个苹果。', exP: 'Wǒ mǎi le sān gè píngguǒ.', exEn: 'I bought three apples.', exAr: 'اشتريت ثلاث تفاحات.' },
+      { id: 'w152', u: 12, h: '吗', p: 'ma', en: 'Yes/No question particle', ar: 'أداة استفهام (هل)', pos: 'Particle', hook: 'Added to the end of any statement to form a yes/no question.', exH: '你是学生吗？', exP: 'Nǐ shì xuéshēng ma?', exEn: 'Are you a student?', exAr: 'هل أنت طالب؟' },
+      { id: 'w153', u: 12, h: '呢', p: 'ne', en: 'Bounce-back question particle', ar: 'أداة سؤال (وماذا عن...؟)', pos: 'Particle', hook: 'Used after a noun/pronoun: 我很好，你呢？(I’m good, and you?)', exH: '我的书呢？', exP: 'Wǒ de shū ne?', exEn: 'Where is my book? / What about my book?', exAr: 'أين كتابي؟' },
+      { id: 'w154', u: 12, h: '不', p: 'bù', en: 'Not / No (present/future/habit)', ar: 'لا / ليس (للنفي)', pos: 'Adverb', hook: 'Negates verbs & adjectives; becomes bú before 4th tone.', exH: '我不喝咖啡。', exP: 'Wǒ bù hē kāfēi.', exEn: 'I don’t drink coffee.', exAr: 'لا أشرب القهوة.' },
+      { id: 'w155', u: 12, h: '没', p: 'méi', en: 'Not (negates 有 & past actions)', ar: 'لم / ليس (للماضي و 有)', pos: 'Adverb', hook: 'Always used with 有 (没有) and past actions.', exH: '他昨天没去学校。', exP: 'Tā zuótiān méi qù xuéxiào.', exEn: 'He didn’t go to school yesterday.', exAr: 'لم يذهب إلى المدرسة أمس.' },
+      { id: 'w156', u: 12, h: '很', p: 'hěn', en: 'Very (adjectival linker)', ar: 'جداً', pos: 'Adverb', hook: 'Links Subject + Adjective naturally: 我很好。', exH: '汉语很有意思。', exP: 'Hànyǔ hěn yǒuyìsi.', exEn: 'Chinese is very interesting.', exAr: 'اللغة الصينية ممتعة جداً.' },
+      { id: 'w157', u: 12, h: '太', p: 'tài', en: 'Too / Extremely (太…了)', ar: 'جداً / للغاية', pos: 'Adverb', hook: 'Framed with 了: 太好了！(Awesome / Too good!).', exH: '今天太热了！', exP: 'Jīntiān tài rè le!', exEn: 'Today is too hot!', exAr: 'اليوم حار للغاية!' },
+      { id: 'w158', u: 12, h: '都', p: 'dōu', en: 'All / Both', ar: 'جميعاً / كلاهما', pos: 'Adverb', hook: 'Always placed BEFORE the verb: 我们都是学生。', exH: '我们都是中国人。', exP: 'Wǒmen dōu shì Zhōngguórén.', exEn: 'We are all Chinese.', exAr: 'نحن جميعاً صينيون.' },
+      { id: 'w159', u: 12, h: '和', p: 'hé', en: 'And (connects nouns)', ar: 'و (لربط الأسماء)', pos: 'Conjunction', hook: 'Connects nouns/pronouns only (never full clauses).', exH: '我和他是好朋友。', exP: 'Wǒ hé tā shì hǎo péngyou.', exEn: 'He and I are good friends.', exAr: 'أنا وهو صديقان مقربان.' },
+      { id: 'w160', u: 12, h: '请', p: 'qǐng', en: 'Please / To invite', ar: 'من فضلك / يدعو', pos: 'Verb', hook: '讠(speech radical) — polite request at sentence start.', exH: '请问，火车站在哪儿？', exP: 'Qǐngwèn, huǒchēzhàn zài nǎr?', exEn: 'Excuse me, where is the train station?', exAr: 'عفواً، أين محطة القطار؟' }
+    ];
+
+    // =========================================================================
+    // 3. GRAMMAR CODEX DATA (10 CORE HSK 1 STRUCTURES)
+    // =========================================================================
+    const GRAMMAR_RULES = [
+      {
+        num: 1,
+        title: 'Equational Sentences with 是 (shì)',
+        arTitle: 'جمل التعريف باستخدام 是 (يكون)',
+        pattern: 'Subject + 是 + Noun / Pronoun',
+        explanation: '是 (shì) links two nouns (A = B). Unlike English "to be," Mandarin verbs NEVER conjugate for person or tense, and 是 is NOT used before adjectives.',
+        examples: [
+          { h: '我是学生。', p: 'Wǒ shì xuéshēng.', en: 'I am a student.', ar: 'أنا طالب.' },
+          { h: '他是我爸爸。', p: 'Tā shì wǒ bàba.', en: 'He is my dad.', ar: 'هو أبي.' }
+        ]
+      },
+      {
+        num: 2,
+        title: 'Negation: 不 (bù) vs. 没 (méi)',
+        arTitle: 'النفي باستخدام 不 و 没',
+        pattern: 'Subject + 不 + Verb/Adj   |   Subject + 没(有) + Noun/Past Verb',
+        explanation: 'Use 不 (bù) for present/habitual actions, future intent, and adjectives. Always use 没 (méi) to negate 有 (to have) or completed past actions.',
+        examples: [
+          { h: '我不喝茶。', p: 'Wǒ bù hē chá.', en: 'I don’t drink tea.', ar: 'لا أشرب الشاي.' },
+          { h: '我没有电脑。', p: 'Wǒ méiyǒu diànnǎo.', en: 'I don’t have a computer.', ar: 'ليس لدي حاسوب.' }
+        ]
+      },
+      {
+        num: 3,
+        title: 'Possession & Modification with 的 (de)',
+        arTitle: 'الملكية والوصف باستخدام 的',
+        pattern: 'Owner + 的 + Noun',
+        explanation: '的 (de) acts like apostrophe-s (’s). For close family members (我爸爸, 我妈妈), 的 is often omitted.',
+        examples: [
+          { h: '这是我的书。', p: 'Zhè shì wǒ de shū.', en: 'This is my book.', ar: 'هذا كتابي.' },
+          { h: '老师的手机很漂亮。', p: 'Lǎoshī de shǒujī hěn piàoliang.', en: 'The teacher’s phone is pretty.', ar: 'هاتف المعلم جميل جداً.' }
+        ]
+      },
+      {
+        num: 4,
+        title: 'Yes/No Questions with 吗 (ma) & Bounce-Back 呢 (ne)',
+        arTitle: 'أسئلة هل (吗) وأسئلة المتابعة (呢)',
+        pattern: 'Statement + 吗？   |   Topic/Pronoun + 呢？',
+        explanation: 'Add 吗 (ma) to the end of any statement to turn it into a yes/no question without changing word order. Add 呢 (ne) after a noun/pronoun to ask "What about...?"',
+        examples: [
+          { h: '你喜欢中国菜吗？', p: 'Nǐ xǐhuan Zhōngguó cài ma?', en: 'Do you like Chinese food?', ar: 'هل تحب الطعام الصيني؟' },
+          { h: '我很好，你呢？', p: 'Wǒ hěn hǎo, nǐ ne?', en: 'I’m very good, and you?', ar: 'أنا بخير جداً، وأنت؟' }
+        ]
+      },
+      {
+        num: 5,
+        title: 'Question Words (什么, 谁, 哪, 几, 多少)',
+        arTitle: 'أدوات الاستفهام في نفس ترتيب الجملة',
+        pattern: 'Subject + Verb + Question Word (In-situ word order)',
+        explanation: 'Mandarin NEVER moves question words to the front of the sentence. Put 什么 (what), 谁 (who), 哪 (which), 几 (how many <10), or 多少 (how much/many) right where the answer belongs.',
+        examples: [
+          { h: '你叫什么名字？', p: 'Nǐ jiào shénme míngzi?', en: 'What is your name?', ar: 'ما اسمك؟' },
+          { h: '这个杯子多少钱？', p: 'Zhège bēizi duōshao qián?', en: 'How much is this cup?', ar: 'بكم هذا الكوب؟' }
+        ]
+      },
+      {
+        num: 6,
+        title: 'Measure Words (个, 本, 块, 岁)',
+        arTitle: 'أدوات التمييز والعد',
+        pattern: 'Number / Demonstrative (这/那) + Measure Word + Noun',
+        explanation: 'In Mandarin, a measure word is mandatory between a number (or 这/那) and a noun: 个 (general), 本 (books), 块 (yuan currency), 岁 (years of age).',
+        examples: [
+          { h: '我买了三本书。', p: 'Wǒ mǎi le sān běn shū.', en: 'I bought three books.', ar: 'اشتريت ثلاثة كتب.' },
+          { h: '我女儿五岁了。', p: 'Wǒ nǚ’ér wǔ suì le.', en: 'My daughter is five years old.', ar: 'ابنتي عمرها خمس سنوات.' }
+        ]
+      },
+      {
+        num: 7,
+        title: 'Modal Verbs: 会 (huì), 能 (néng), 想 (xiǎng)',
+        arTitle: 'أفعال القدرة والرغبة',
+        pattern: 'Subject + 会 / 能 / 想 + Verb + Object',
+        explanation: '会 (huì) = learned skill ("know how to"); 能 (néng) = physical ability or permission ("can/may"); 想 (xiǎng) = desire ("would like to / want to").',
+        examples: [
+          { h: '我会说一点儿汉语。', p: 'Wǒ huì shuō yìdiǎnr Hànyǔ.', en: 'I can speak a little Mandarin.', ar: 'أستطيع التحدث بالقليل من الصينية.' },
+          { h: '我想去北京。', p: 'Wǒ xiǎng qù Běijīng.', en: 'I want to go to Beijing.', ar: 'أريد الذهاب إلى بكين.' }
+        ]
+      },
+      {
+        num: 8,
+        title: 'Location & Preposition 在 (zài)',
+        arTitle: 'المكان وحرف الجر 在',
+        pattern: 'Subject + 在 + Place   |   Subject + 在 + Place + Verb',
+        explanation: '在 works both as a main verb ("to be located at") and as a preposition before an action verb ("do X at Place").',
+        examples: [
+          { h: '小猫在椅子下面。', p: 'Xiǎomāo zài yǐzi xiàmiàn.', en: 'The kitten is under the chair.', ar: 'القطة الصغيرة تحت الكرسي.' },
+          { h: '我在学校学习汉语。', p: 'Wǒ zài xuéxiào xuéxí Hànyǔ.', en: 'I study Chinese at school.', ar: 'أدرس اللغة الصينية في المدرسة.' }
+        ]
+      },
+      {
+        num: 9,
+        title: 'Time Expressions (Big-to-Small Order)',
+        arTitle: 'ترتيب الوقت والتاريخ (من الأكبر للأصغر)',
+        pattern: 'Year (年) → Month (月) → Day (日) → Weekday (星期) → Hour (点) → Minute (分)',
+        explanation: 'Mandarin orders time strictly from largest unit to smallest unit, placed either before or immediately after the subject.',
+        examples: [
+          { h: '明天上午九点我去医院。', p: 'Míngtiān shàngwǔ jiǔ diǎn wǒ qù yīyuàn.', en: 'Tomorrow at 9:00 AM I am going to the hospital.', ar: 'غداً الساعة التاسعة صباحاً أذهب إلى المستشفى.' },
+          { h: '今天是十月八日星期五。', p: 'Jīntiān shì shíyuè bā rì xīngqīwǔ.', en: 'Today is Friday, October 8th.', ar: 'اليوم هو الجمعة الثامن من أكتوبر.' }
+        ]
+      },
+      {
+        num: 10,
+        title: 'Completed Action 了 (le) & Degree 很 / 太…了',
+        arTitle: 'إتمام الفعل (了) ودرجة الصفة (很 / 太…了)',
+        pattern: 'Subject + Verb + 了 + Object   |   Subject + 很 / 太 + Adj + 了',
+        explanation: '了 after a verb marks completion; 太 + Adj + 了 expresses "too / extremely!" while 很 links adjectives neutrally.',
+        examples: [
+          { h: '昨天我买了一件衣服。', p: 'Zuótiān wǒ mǎi le yí jiàn yīfu.', en: 'Yesterday I bought a piece of clothing.', ar: 'أمس اشتريت قطعة ملابس.' },
+          { h: '这个电影太好看了！', p: 'Zhège diànyǐng tài hǎokàn le!', en: 'This movie is so good!', ar: 'هذا الفيلم رائع للغاية!' }
+        ]
+      }
+    ];
+
+    // =========================================================================
+    // 4. PINYIN SOUNDBOARD & TONE LAB DATA
+    // =========================================================================
+    const TONE_DEMOS = [
+      { syl: 'mā', hanzi: '妈', tone: 1, meaning: 'Mother', ar: 'أم', desc: 'High & steady flat pitch (5-5).', path: 'M 15 22 L 105 22' },
+      { syl: 'má', hanzi: '麻', tone: 2, meaning: 'Hemp / Numb', ar: 'خدر / قنب', desc: 'Rising pitch like asking "What?" (3-5).', path: 'M 15 68 Q 60 55 105 22' },
+      { syl: 'mǎ', hanzi: '马', tone: 3, meaning: 'Horse', ar: 'حصان', desc: 'Low dipping pitch then slight rise (2-1-4).', path: 'M 15 52 Q 55 90 105 40' },
+      { syl: 'mà', hanzi: '骂', tone: 4, meaning: 'To scold', ar: 'يوبخ', desc: 'Sharp downward drop like "No!" (5-1).', path: 'M 15 20 L 105 84' },
+      { syl: 'ma', hanzi: '吗', tone: 0, meaning: 'Question particle', ar: 'أداة استفهام', desc: 'Short, light, unstressed neutral syllable.', path: 'M 38 52 L 82 56' }
+    ];
+
+    const PINYIN_SOUNDBOARD = [
+      { group: 'Labials (b, p, m, f)', items: [
+        { p: 'bàba', h: '爸爸', en: 'Dad' }, { p: 'píngguǒ', h: '苹果', en: 'Apple' },
+        { p: 'māma', h: '妈妈', en: 'Mom' }, { p: 'fēijī', h: '飞机', en: 'Airplane' }
+      ]},
+      { group: 'Alveolars (d, t, n, l)', items: [
+        { p: 'dà', h: '大', en: 'Big' }, { p: 'tā', h: '他', en: 'He' },
+        { p: 'nǐ', h: '你', en: 'You' }, { p: 'lǎoshī', h: '老师', en: 'Teacher' }
+      ]},
+      { group: 'Velars (g, k, h)', items: [
+        { p: 'gǒu', h: '狗', en: 'Dog' }, { p: 'kàn', h: '看', en: 'Look' },
+        { p: 'hǎo', h: '好', en: 'Good' }, { p: 'hē', h: '喝', en: 'Drink' }
+      ]},
+      { group: 'Palatals — Flat Tongue (j, q, x)', items: [
+        { p: 'jiā', h: '家', en: 'Home' }, { p: 'qù', h: '去', en: 'Go' },
+        { p: 'xièxie', h: '谢谢', en: 'Thanks' }, { p: 'xuéxí', h: '学习', en: 'Study' }
+      ]},
+      { group: 'Retroflexes — Curled Tongue (zh, ch, sh, r)', items: [
+        { p: 'Zhōngguó', h: '中国', en: 'China' }, { p: 'chī', h: '吃', en: 'Eat' },
+        { p: 'shū', h: '书', en: 'Book' }, { p: 'rè', h: '热', en: 'Hot' }
+      ]},
+      { group: 'Dental Sibilants (z, c, s)', items: [
+        { p: 'zài', h: '在', en: 'At' }, { p: 'cài', h: '菜', en: 'Dish' },
+        { p: 'suì', h: '岁', en: 'Years old' }, { p: 'zàijiàn', h: '再见', en: 'Goodbye' }
+      ]}
+    ];
+
+    // =========================================================================
+    // 5. ARCADE SENTENCE BUILDERS & 4 REAL-LIFE DIALOGUE SCENARIOS
+    // =========================================================================
+    const SENTENCE_CHALLENGES = [
+      { en: 'What is your name?', ar: 'ما اسمك؟', fullH: '你叫什么名字？', fullP: 'Nǐ jiào shénme míngzi?', target: ['你', '叫', '什么', '名字'], tiles: ['名字', '叫', '你', '什么', '我'], note: 'Question word 什么 stays in place after the verb 叫.' },
+      { en: 'How much money is this cup?', ar: 'بكم هذا الكوب؟', fullH: '这个杯子多少钱？', fullP: 'Zhège bēizi duōshao qián?', target: ['这个', '杯子', '多少', '钱'], tiles: ['钱', '杯子', '这个', '多少', '几'], note: '这个 (this + measure word) + 杯子 (cup) + 多少钱 (how much money).' },
+      { en: 'I don’t have a computer.', ar: 'ليس لدي حاسوب.', fullH: '我没有电脑。', fullP: 'Wǒ méiyǒu diànnǎo.', target: ['我', '没有', '电脑'], tiles: ['电脑', '不', '我', '没有', '是'], note: 'Always negate 有 (to have) with 没, never 不!' },
+      { en: 'We are all university students.', ar: 'نحن جميعاً طلاب جامعيون.', fullH: '我们都是大学生。', fullP: 'Wǒmen dōu shì dàxuéshēng.', target: ['我们', '都', '是', '大学生'], tiles: ['大学生', '是', '都', '我们', '很'], note: 'Adverb 都 (all/both) always comes before the verb 是.' },
+      { en: 'I want to go to China to study Mandarin.', ar: 'أريد الذهاب إلى الصين لدراسة الصينية.', fullH: '我想去中国学习汉语。', fullP: 'Wǒ xiǎng qù Zhōngguó xuéxí Hànyǔ.', target: ['我', '想', '去', '中国', '学习', '汉语'], tiles: ['汉语', '中国', '想', '我', '学习', '去'], note: 'Serial verb construction: 想 (want) + 去中国 (go to China) + 学习汉语 (study Mandarin).' },
+      { en: 'The little cat is under the chair.', ar: 'القطة الصغيرة تحت الكرسي.', fullH: '小猫在椅子下面。', fullP: 'Xiǎomāo zài yǐzi xiàmiàn.', target: ['小猫', '在', '椅子', '下面'], tiles: ['下面', '在', '小猫', '椅子', '上面'], note: 'Subject + 在 + Reference Object + Localizer (下面 = under).' },
+      { en: 'Yesterday I bought three books.', ar: 'أمس اشتريت ثلاثة كتب.', fullH: '昨天我买了三本书。', fullP: 'Zuótiān wǒ mǎi le sān běn shū.', target: ['昨天', '我', '买了', '三本', '书'], tiles: ['书', '我', '买了', '昨天', '三本'], note: 'Completed action particle 了 follows the verb 买, and 本 is the measure word for books.' },
+      { en: 'Today’s weather is too hot!', ar: 'الطقس اليوم حار للغاية!', fullH: '今天天气太热了！', fullP: 'Jīntiān tiānqì tài rè le!', target: ['今天', '天气', '太', '热', '了'], tiles: ['了', '热', '天气', '太', '今天'], note: '太 + Adjective + 了 expresses high degree ("too / extremely").' }
+    ];
+
+    const DIALOGUE_SCENARIOS = [
+      {
+        id: 'restaurant',
+        icon: '🍜',
+        title: '1. At the Beijing Restaurant',
+        ar: 'في المطعم الصيني',
+        partner: 'Waiter (服务员)',
+        turns: [
+          {
+            npcH: '你好！请问你想吃什么？',
+            npcP: 'Nǐ hǎo! Qǐngwèn nǐ xiǎng chī shénme?',
+            npcEn: 'Hello! May I ask what you would like to eat?',
+            npcAr: 'مرحباً! عفواً، ماذا تريد أن تأكل؟',
+            options: [
+              { h: '我想吃米饭和中国菜。', p: 'Wǒ xiǎng chī mǐfàn hé Zhōngguó cài.', en: 'I would like to eat rice and Chinese dishes.', ok: true, tip: 'Perfect! 和 connects the two nouns 米饭 and 中国菜.' },
+              { h: '我吃米饭和喝茶。', p: 'Wǒ chī mǐfàn hé hē chá.', en: 'Incorrect use of 和 between verbs.', ok: false, tip: 'Remember: 和 only connects nouns, not verb phrases!' }
+            ]
+          },
+          {
+            npcH: '好的！你想喝水还是喝茶？',
+            npcP: 'Hǎo de! Nǐ xiǎng hē shuǐ háishi hē chá?',
+            npcEn: 'Okay! Would you like to drink water or tea?',
+            npcAr: 'حسناً! هل تريد شرب الماء أم الشاي؟',
+            options: [
+              { h: '我很渴，我想喝茶。谢谢！', p: 'Wǒ hěn kě, wǒ xiǎng hē chá. Xièxie!', en: 'I am very thirsty, I want to drink tea. Thank you!', ok: true, tip: 'Natural and polite!' },
+              { h: '我是渴，我喝茶。', p: 'Wǒ shì kě, wǒ hē chá.', en: 'Don’t use 是 before adjectives.', ok: false, tip: 'Use 很 before adjectives like 渴 (thirsty), never 是!' }
+            ]
+          },
+          {
+            npcH: '不客气！一共三十五块钱。',
+            npcP: 'Bú kèqi! Yígòng sānshíwǔ kuài qián.',
+            npcEn: 'You’re welcome! In total it is 35 yuan.',
+            npcAr: 'عفواً! المجموع ٣٥ يواناً.',
+            options: [
+              { h: '给你钱，再见！', p: 'Gěi nǐ qián, zàijiàn!', en: 'Here is the money, goodbye!', ok: true, tip: 'Scenario completed!' },
+              { h: '我没有去商店。', p: 'Wǒ méiyǒu qù shāngdiàn.', en: 'I didn’t go to the store.', ok: false, tip: 'That doesn’t answer the bill!' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'market',
+        icon: '🍎',
+        title: '2. Shopping at the Fruit Market',
+        ar: 'التسوق في سوق الفواكه',
+        partner: 'Shopkeeper (商店老板)',
+        turns: [
+          {
+            npcH: '你好！你想买什么水果？',
+            npcP: 'Nǐ hǎo! Nǐ xiǎng mǎi shénme shuǐguǒ?',
+            npcEn: 'Hello! What fruit would you like to buy?',
+            npcAr: 'مرحباً! أي فاكهة تريد أن تشتري؟',
+            options: [
+              { h: '我想买苹果。这个苹果多少钱？', p: 'Wǒ xiǎng mǎi píngguǒ. Zhège píngguǒ duōshao qián?', en: 'I want to buy apples. How much is this apple?', ok: true, tip: 'Great use of 多少钱 (how much money)!' },
+              { h: '我想买苹果。这个苹果几岁？', p: 'Wǒ xiǎng mǎi píngguǒ. Zhège píngguǒ jǐ suì?', en: 'How old is this apple?', ok: false, tip: '几岁 asks age! Use 多少钱 for price.' }
+            ]
+          },
+          {
+            npcH: '五块钱一个。你要几个？',
+            npcP: 'Wǔ kuài qián yí gè. Nǐ yào jǐ gè?',
+            npcEn: 'Five yuan each. How many do you want?',
+            npcAr: 'خمسة يوانات للواحدة. كم واحدة تريد؟',
+            options: [
+              { h: '我要四个苹果，一共二十块钱。', p: 'Wǒ yào sì gè píngguǒ, yígòng èrshí kuài qián.', en: 'I want four apples, 20 yuan in total.', ok: true, tip: 'Spot on with measure word 个 and currency 块!' },
+              { h: '我要四苹果。', p: 'Wǒ yào sì píngguǒ.', en: 'Missing measure word 个.', ok: false, tip: 'Always put measure word 个 between 四 and 苹果: 四个苹果!' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'station',
+        icon: '🚄',
+        title: '3. Asking Directions to the Train Station',
+        ar: 'السؤال عن الطريق لمحطة القطار',
+        partner: 'Local Passerby (北京人)',
+        turns: [
+          {
+            npcH: '你好！有什么事吗？',
+            npcP: 'Nǐ hǎo! Yǒu shénme shì ma?',
+            npcEn: 'Hello! Can I help you with something?',
+            npcAr: 'مرحباً! هل هناك ما أساعدك به؟',
+            options: [
+              { h: '请问，火车站在哪儿？远吗？', p: 'Qǐngwèn, huǒchēzhàn zài nǎr? Yuǎn ma?', en: 'Excuse me, where is the train station? Is it far?', ok: true, tip: 'Polite opening with 请问 + 在哪儿!' },
+              { h: '火车站是什么？', p: 'Huǒchēzhàn shì shénme?', en: 'What is a train station?', ok: false, tip: 'Use 在哪儿 (where is...) to ask location.' }
+            ]
+          },
+          {
+            npcH: '不远，就在学校前面。你可以坐出租车去。',
+            npcP: 'Bù yuǎn, jiù zài xuéxiào qiánmiàn. Nǐ kěyǐ zuò chūzūchē qù.',
+            npcEn: 'Not far, right in front of the school. You can take a taxi there.',
+            npcAr: 'ليست بعيدة، أمام المدرسة مباشرة. يمكنك أخذ تاكسي.',
+            options: [
+              { h: '太好了，谢谢你！再见！', p: 'Tài hǎo le, xièxie nǐ! Zàijiàn!', en: 'Awesome, thank you! Goodbye!', ok: true, tip: 'Natural 太好了 response!' },
+              { h: '对不起，我不会去。', p: 'Duìbuqǐ, wǒ bú huì qù.', en: 'Incorrect modal verb.', ok: false, tip: 'Thank them with 谢谢你!' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'university',
+        icon: '🎓',
+        title: '4. Meeting a Classmate at University',
+        ar: 'التعارف في الجامعة',
+        partner: 'Classmate (王朋)',
+        turns: [
+          {
+            npcH: '你好！我是王朋，我是大学生。你呢？',
+            npcP: 'Nǐ hǎo! Wǒ shì Wáng Péng, wǒ shì dàxuéshēng. Nǐ ne?',
+            npcEn: 'Hello! I am Wang Peng, I am a university student. And you?',
+            npcAr: 'مرحباً! أنا وانغ بنغ، طالب جامعي. وأنت؟',
+            options: [
+              { h: '你好！我也是学生，我学习汉语。', p: 'Nǐ hǎo! Wǒ yě shì xuéshēng, wǒ xuéxí Hànyǔ.', en: 'Hello! I am also a student, I study Chinese.', ok: true, tip: 'Great use of 也 (also) before 是!' },
+              { h: '你好！我是也学生。', p: 'Nǐ hǎo! Wǒ shì yě xuéshēng.', en: 'Adverb 也 goes before the verb.', ok: false, tip: 'Place 也 BEFORE the verb 是: 我也是学生.' }
+            ]
+          },
+          {
+            npcH: '你的汉语很好！认识你很高兴！',
+            npcP: 'Nǐ de Hànyǔ hěn hǎo! Rènshi nǐ hěn gāoxìng!',
+            npcEn: 'Your Chinese is very good! Nice to meet you!',
+            npcAr: 'لغتك الصينية جيدة جداً! سعيد بالتعرف إليك!',
+            options: [
+              { h: '谢谢！认识你我也很高兴！', p: 'Xièxie! Rènshi nǐ wǒ yě hěn gāoxìng!', en: 'Thank you! Nice to meet you too!', ok: true, tip: 'All 4 HSK 1 scenarios mastered!' },
+              { h: '不客气，我不认识。', p: 'Bú kèqi, wǒ bú rènshi.', en: 'I don’t know.', ok: false, tip: 'Reply with 认识你我也很高兴！' }
+            ]
+          }
+        ]
+      }
+    ];
+
+    // =========================================================================
+    // 6. GLOBAL APPLICATION STATE & PERSISTENCE
+    // =========================================================================
+    const state = {
+      tab: 'encyclopedia',
+      showPinyin: true,
+      searchQuery: '',
+      selectedUnit: 0, // 0 = All 12 Units
+      masteredIds: new Set(),
+      xp: 0,
+
+      // Pinyin Lab
+      pinyinSub: 'tones', // 'tones' | 'board' | 'quiz'
+      toneQuizIdx: 0,
+      toneQuizOptions: [],
+      toneQuizAnswered: false,
+      toneQuizPicked: null,
+
+      // Vocabulary Arena
+      arenaUnit: 0,
+      arenaMode: 'listen', // 'listen' | 'hanzi2en' | 'en2hanzi'
+      arenaHearts: 3,
+      arenaStreak: 0,
+      arenaQuestion: null,
+      arenaAnswered: false,
+      arenaPicked: null,
+
+      // Arcade
+      arcadeSub: 'builder', // 'builder' | 'dialogue'
+      builderIdx: 0,
+      builderTray: [],
+      builderChecked: false,
+      builderOk: false,
+
+      scenarioIdx: 0,
+      turnIdx: 0,
+      turnAnswered: false,
+      turnPicked: null,
+      scenarioDone: false
+    };
+
+    try {
+      const savedMastered = JSON.parse(localStorage.getItem('hsk1_studio_mastered') || '[]');
+      if (Array.isArray(savedMastered)) state.masteredIds = new Set(savedMastered);
+      state.xp = parseInt(localStorage.getItem('hsk1_studio_xp') || '0', 10) || 0;
+    } catch (e) {}
+
+    function saveProgress() {
+      try {
+        localStorage.setItem('hsk1_studio_mastered', JSON.stringify([...state.masteredIds]));
+        localStorage.setItem('hsk1_studio_xp', String(state.xp));
+      } catch (e) {}
+      updateTopHud();
+    }
+
+    function addXP(amount) {
+      state.xp += amount;
+      saveProgress();
+    }
+
+    // =========================================================================
+    // 7. GLOBAL CONTROLS & HELPERS
+    // =========================================================================
+    function speakWord(hanzi, btnEl) {
+      player.speak(hanzi, btnEl);
+    }
+
+    function testGlobalAudio(btnEl) {
+      player.speak('你好', btnEl, (status) => {
+        const el = document.getElementById('audioStatusText');
+        if (el) el.textContent = status;
+      });
+      showToast('🔊 Playing native Mandarin: "你好 (Nǐ hǎo)"');
+    }
+
+    function toggleAudioSpeed() {
+      const nextRate = player.rate === 1.0 ? 0.75 : 1.0;
+      player.setRate(nextRate);
+      document.getElementById('speedToggleBtn').textContent = nextRate === 1.0 ? '1.0x' : '0.75x';
+      showToast(nextRate === 0.75 ? '🐢 Slow Learner Speed (0.75x)' : '⚡ Normal Speed (1.0x)');
+    }
+
+    function togglePinyin() {
+      state.showPinyin = !state.showPinyin;
+      updateTopHud();
+      renderMain();
+      showToast(state.showPinyin ? '👁️ Pinyin shown' : '🙈 Hardcore Mode: Pinyin hidden');
+    }
+
+    function handleGlobalSearch(val) {
+      state.searchQuery = val.trim().toLowerCase();
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (clearBtn) clearBtn.classList.toggle('hidden', !state.searchQuery);
+      if (state.tab !== 'encyclopedia') {
+        state.tab = 'encyclopedia';
+        updateTopHud();
+      }
+      renderMain();
+    }
+
+    function clearGlobalSearch() {
+      state.searchQuery = '';
+      const inp = document.getElementById('globalSearchInput');
+      if (inp) inp.value = '';
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (clearBtn) clearBtn.classList.add('hidden');
+      renderMain();
+    }
+
+    function switchTab(tabName) {
+      player.stop();
+      state.tab = tabName;
+      if (tabName === 'pinyin' && state.toneQuizOptions.length === 0) prepareToneQuiz();
+      if (tabName === 'arena' && !state.arenaQuestion) generateArenaQuestion();
+      updateTopHud();
+      renderMain();
+    }
+
+    function toggleMastered(wordId) {
+      if (state.masteredIds.has(wordId)) {
+        state.masteredIds.delete(wordId);
+      } else {
+        state.masteredIds.add(wordId);
+        addXP(10);
+        player.playSfx('ok');
+        showToast('✓ Marked Mastered (+10 XP)');
+      }
+      saveProgress();
+      renderMain();
+    }
+
+    function updateTopHud() {
+      document.getElementById('masteredCountHud').textContent = state.masteredIds.size;
+      document.getElementById('totalWordsHud').textContent = `/${HSK1_WORDS.length}`;
+      document.getElementById('xpCountHud').textContent = state.xp;
+
+      document.getElementById('pinyinStateLabel').textContent = state.showPinyin ? 'ON' : 'OFF';
+      document.getElementById('pinyinIndicator').className = state.showPinyin
+        ? 'w-2 h-2 rounded-full bg-gold-400'
+        : 'w-2 h-2 rounded-full bg-ink-700';
+
+      document.querySelectorAll('.main-tab').forEach(btn => {
+        const active = btn.getAttribute('data-tab') === state.tab;
+        btn.className = active
+          ? 'main-tab px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition bg-terracotta-500 text-white shadow'
+          : 'main-tab px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition bg-ink-800 text-ivory-200 hover:bg-ink-700';
+      });
+    }
+
+    let toastTimeout = null;
+    function showToast(msg) {
+      const el = document.getElementById('toastEl');
+      const box = document.getElementById('toastMsg');
+      box.textContent = msg;
+      el.classList.remove('opacity-0', 'translate-y-3');
+      el.classList.add('opacity-100', 'translate-y-0');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        el.classList.remove('opacity-100', 'translate-y-0');
+        el.classList.add('opacity-0', 'translate-y-3');
+      }, 2200);
+    }
+
+    function shuffle(list) {
+      const arr = [...list];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function eqIcon() {
+      return `<span class="eq-bars" aria-hidden="true"><span></span><span></span><span></span><span></span></span>`;
+    }
+
+    // =========================================================================
+    // 8. TAB 1: HSK 1 ENCYCLOPEDIA (155 WORDS ACROSS 12 UNITS)
+    // =========================================================================
+    function renderEncyclopediaTab() {
+      const q = state.searchQuery;
+      const filtered = HSK1_WORDS.filter(w => {
+        const unitMatch = state.selectedUnit === 0 || w.u === state.selectedUnit;
+        if (!unitMatch) return false;
+        if (!q) return true;
+        return (
+          w.h.includes(q) ||
+          w.p.toLowerCase().includes(q) ||
+          w.en.toLowerCase().includes(q) ||
+          w.ar.includes(q)
+        );
+      });
+
+      const pct = Math.round((state.masteredIds.size / HSK1_WORDS.length) * 100);
+
+      return `
+        <div class="space-y-5 animate-pop">
+          <!-- Progress & Mobile Search Header -->
+          <div class="study-card rounded-3xl p-5 sm:p-6 space-y-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-xl sm:text-2xl font-bold text-ink-900">HSK 1 Complete Vocabulary Encyclopedia</h2>
+                <p class="text-xs sm:text-sm text-ink-800/75 mt-0.5">
+                  Tap any speaker button to hear native Mandarin pronunciation for the word or full example sentence.
+                </p>
+              </div>
+              <div class="w-full md:w-64 space-y-1.5">
+                <div class="flex justify-between text-xs font-bold text-ink-900">
+                  <span>HSK 1 Mastery</span>
+                  <span class="text-jade-600">${state.masteredIds.size} / ${HSK1_WORDS.length} (${pct}%)</span>
+                </div>
+                <div class="w-full h-2.5 rounded-full bg-ivory-300 overflow-hidden">
+                  <div class="h-full bg-jade-500 transition-all duration-300" style="width: ${pct}%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mobile Search Input -->
+            <div class="md:hidden">
+              <input
+                type="text"
+                value="${state.searchQuery}"
+                oninput="handleGlobalSearch(this.value)"
+                placeholder="Search 汉字, pinyin, English, or عربي..."
+                class="w-full px-3.5 py-2.5 rounded-xl bg-ivory-50 border border-ivory-300 focus:border-terracotta-500 focus:outline-none text-sm text-ink-900"
+              />
+            </div>
+
+            <!-- 12 Thematic Unit Filter Pills -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1">
+              <button onclick="selectEncyclopediaUnit(0)" class="px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${state.selectedUnit === 0 ? 'bg-ink-900 text-gold-400 shadow' : 'bg-ivory-200 text-ink-800 hover:bg-ivory-300'}">
+                All Units (${HSK1_WORDS.length})
+              </button>
+              ${UNITS.map(u => {
+                const count = HSK1_WORDS.filter(w => w.u === u.id).length;
+                const active = state.selectedUnit === u.id;
+                return `
+                  <button onclick="selectEncyclopediaUnit(${u.id})" class="px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${active ? 'bg-ink-900 text-gold-400 shadow' : 'bg-ivory-200 text-ink-800 hover:bg-ivory-300'}">
+                    ${u.title} (${count})
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          <!-- Results Count -->
+          <div class="flex items-center justify-between text-xs text-ivory-200/75 px-1">
+            <span>Showing <strong>${filtered.length}</strong> HSK 1 entries</span>
+            ${state.selectedUnit !== 0 ? `<span class="text-gold-400 font-semibold">${UNITS[state.selectedUnit - 1].ar}</span>` : ''}
+          </div>
+
+          <!-- Vocabulary Cards Grid -->
+          ${filtered.length === 0 ? `
+            <div class="study-card rounded-3xl p-10 text-center space-y-3">
+              <div class="text-4xl">🔍</div>
+              <h3 class="text-lg font-bold text-ink-900">No matching HSK 1 words found</h3>
+              <button onclick="clearGlobalSearch(); selectEncyclopediaUnit(0);" class="px-4 py-2 rounded-xl bg-ink-900 text-gold-400 text-xs font-bold">Reset Filters</button>
+            </div>
+          ` : `
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${filtered.map(w => {
+                const mastered = state.masteredIds.has(w.id);
+                return `
+                  <article class="study-card rounded-3xl p-5 flex flex-col justify-between transition border-2 ${mastered ? 'border-jade-500/70' : 'border-transparent'}">
+                    <div>
+                      <!-- Top Row: POS + Mastered Toggle -->
+                      <div class="flex items-center justify-between gap-2 mb-3">
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-ivory-200 text-ink-800/80">
+                          Unit ${w.u} • ${w.pos}
+                        </span>
+                        <button onclick="toggleMastered('${w.id}')" class="px-2.5 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1 ${mastered ? 'bg-jade-500 text-white' : 'bg-ivory-200 text-ink-800/70 hover:bg-jade-500/20 hover:text-jade-600'}">
+                          <span>${mastered ? '✓ Mastered' : '○ Master'}</span>
+                        </button>
+                      </div>
+
+                      <!-- Hanzi + Pinyin + Audio Button -->
+                      <div class="flex items-center justify-between gap-3">
+                        <div>
+                          <div class="text-3xl sm:text-4xl font-bold hanzi text-ink-900">${w.h}</div>
+                          ${state.showPinyin ? `<div class="text-sm font-mono font-semibold text-terracotta-500 mt-1">${w.p}</div>` : ''}
+                        </div>
+                        <button onclick="speakWord('${w.h}', this)" title="Pronounce Word" class="w-11 h-11 rounded-2xl bg-ink-900 text-gold-400 hover:bg-terracotta-500 hover:text-white active:scale-95 transition flex items-center justify-center shrink-0 shadow">
+                          ${eqIcon()}
+                        </button>
+                      </div>
+
+                      <!-- English & Arabic Meanings -->
+                      <div class="mt-3 pt-3 border-t border-ivory-300 flex items-baseline justify-between gap-2">
+                        <div class="font-bold text-base text-ink-900">${w.en}</div>
+                        <div class="font-bold text-sm text-jade-600 text-right" dir="rtl">${w.ar}</div>
+                      </div>
+
+                      <!-- Visual / Radical Hook -->
+                      <p class="mt-2 text-xs text-ink-800/75 leading-relaxed">
+                        <strong class="text-ink-900">💡 Hook:</strong> ${w.hook}
+                      </p>
+                    </div>
+
+                    <!-- Example Sentence Box with Dedicated Audio -->
+                    <div class="mt-4 p-3 rounded-2xl bg-ivory-200/85 border border-ivory-300 space-y-1">
+                      <div class="flex items-start justify-between gap-2">
+                        <div>
+                          <div class="text-sm font-bold hanzi text-ink-900">${w.exH}</div>
+                          ${state.showPinyin ? `<div class="text-[11px] font-mono text-terracotta-600">${w.exP}</div>` : ''}
+                        </div>
+                        <button onclick="speakWord('${w.exH}', this)" title="Pronounce Example Sentence" class="px-2.5 py-1.5 rounded-xl bg-ink-900 text-gold-400 hover:bg-terracotta-500 hover:text-white transition flex items-center gap-1 text-[11px] font-semibold shrink-0">
+                          ${eqIcon()}
+                          <span>Ex</span>
+                        </button>
+                      </div>
+                      <div class="text-xs text-ink-800/85 pt-0.5">${w.exEn}</div>
+                      <div class="text-xs text-jade-600 font-medium text-right" dir="rtl">${w.exAr}</div>
+                    </div>
+                  </article>
+                `;
+              }).join('')}
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function selectEncyclopediaUnit(unitId) {
+      state.selectedUnit = unitId;
+      renderMain();
+    }
+
+    // =========================================================================
+    // 9. TAB 2: GRAMMAR CODEX (10 ESSENTIAL HSK 1 STRUCTURES)
+    // =========================================================================
+    function renderGrammarTab() {
+      return `
+        <div class="space-y-5 animate-pop">
+          <div class="study-card rounded-3xl p-6">
+            <h2 class="text-xl sm:text-2xl font-bold text-ink-900">HSK 1 Complete Grammar Codex</h2>
+            <p class="text-xs sm:text-sm text-ink-800/75 mt-1">
+              All 10 core grammatical structures required for HSK Level 1, with bilingual explanations and clickable audio examples.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${GRAMMAR_RULES.map(rule => `
+              <div class="study-card rounded-3xl p-6 flex flex-col justify-between space-y-4">
+                <div class="space-y-2.5">
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="px-2.5 py-1 rounded-xl bg-ink-900 text-gold-400 text-xs font-bold">Structure #${rule.num}</span>
+                    <span class="text-xs font-bold text-jade-600" dir="rtl">${rule.arTitle}</span>
+                  </div>
+                  <h3 class="text-lg font-bold text-ink-900">${rule.title}</h3>
+                  <div class="p-3 rounded-xl bg-ink-900 text-gold-400 font-mono text-xs sm:text-sm font-semibold">
+                    ${rule.pattern}
+                  </div>
+                  <p class="text-xs sm:text-sm text-ink-800/80 leading-relaxed">${rule.explanation}</p>
+                </div>
+
+                <div class="space-y-2.5 pt-2 border-t border-ivory-300">
+                  ${rule.examples.map(ex => `
+                    <div class="p-3 rounded-2xl bg-ivory-200/80 border border-ivory-300 flex items-center justify-between gap-3">
+                      <div>
+                        <div class="text-base font-bold hanzi text-ink-900">${ex.h}</div>
+                        ${state.showPinyin ? `<div class="text-xs font-mono text-terracotta-500">${ex.p}</div>` : ''}
+                        <div class="text-xs text-ink-800/80 mt-0.5">${ex.en} • <span class="text-jade-600 font-semibold">${ex.ar}</span></div>
+                      </div>
+                      <button onclick="speakWord('${ex.h}', this)" class="w-10 h-10 rounded-xl bg-ink-900 text-gold-400 hover:bg-terracotta-500 hover:text-white transition flex items-center justify-center shrink-0">
+                        ${eqIcon()}
+                      </button>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 10. TAB 3: PINYIN & TONE LAB
+    // =========================================================================
+    function prepareToneQuiz() {
+      const pool = HSK1_WORDS.filter(w => w.h.length <= 2);
+      const target = pool[Math.floor(Math.random() * pool.length)];
+      const distractors = shuffle(pool.filter(w => w.id !== target.id)).slice(0, 3);
+      state.toneQuizTarget = target;
+      state.toneQuizOptions = shuffle([target, ...distractors]);
+      state.toneQuizAnswered = false;
+      state.toneQuizPicked = null;
+    }
+
+    function renderPinyinTab() {
+      if (!state.toneQuizTarget) prepareToneQuiz();
+
+      return `
+        <div class="space-y-5 animate-pop">
+          <!-- Sub-Navigation -->
+          <div class="flex flex-wrap gap-2 bg-ink-800 p-1.5 rounded-2xl border border-ink-700">
+            <button onclick="setPinyinSub('tones')" class="flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition ${state.pinyinSub === 'tones' ? 'bg-terracotta-500 text-white shadow' : 'text-ivory-200 hover:text-white'}">
+              🎵 4 Tones & Sandhi Lab
+            </button>
+            <button onclick="setPinyinSub('board')" class="flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition ${state.pinyinSub === 'board' ? 'bg-terracotta-500 text-white shadow' : 'text-ivory-200 hover:text-white'}">
+              🎛️ Initials Soundboard
+            </button>
+            <button onclick="setPinyinSub('quiz')" class="flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition ${state.pinyinSub === 'quiz' ? 'bg-terracotta-500 text-white shadow' : 'text-ivory-200 hover:text-white'}">
+              🎧 Tone & Pinyin Ear Quiz
+            </button>
+          </div>
+
+          ${state.pinyinSub === 'tones' ? `
+            <div class="study-card rounded-3xl p-6 sm:p-8 space-y-6">
+              <div>
+                <h2 class="text-xl sm:text-2xl font-bold text-ink-900">The 4 Mandarin Tones + Neutral Tone</h2>
+                <p class="text-xs sm:text-sm text-ink-800/75 mt-1">Click any card to hear the native Mandarin pronunciation and inspect its pitch contour.</p>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                ${TONE_DEMOS.map(t => `
+                  <button onclick="speakWord('${t.hanzi}', this)" class="p-4 rounded-2xl bg-ivory-50 border-2 border-ivory-300 hover:border-terracotta-500 transition text-left flex flex-col justify-between group">
+                    <div class="flex items-start justify-between">
+                      <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-terracotta-500">${t.tone === 0 ? 'Neutral Tone' : 'Tone ' + t.tone}</span>
+                        <div class="flex items-baseline gap-2 mt-0.5">
+                          <span class="text-2xl font-mono font-bold text-ink-900">${t.syl}</span>
+                          <span class="text-2xl hanzi font-bold text-gold-600">${t.hanzi}</span>
+                        </div>
+                        <div class="text-xs font-semibold text-ink-800/75">${t.meaning} • <span class="text-jade-600">${t.ar}</span></div>
+                      </div>
+                      <span class="w-10 h-10 rounded-xl bg-ink-900 text-gold-400 group-hover:bg-terracotta-500 group-hover:text-white flex items-center justify-center transition">
+                        ${eqIcon()}
+                      </span>
+                    </div>
+
+                    <div class="my-3 bg-ivory-200 rounded-xl p-2 border border-ivory-300">
+                      <svg viewBox="0 0 120 100" class="w-full h-14 overflow-visible">
+                        <line x1="10" y1="22" x2="110" y2="22" stroke="#CBD5E1" stroke-dasharray="3 3" stroke-width="1"/>
+                        <line x1="10" y1="52" x2="110" y2="52" stroke="#CBD5E1" stroke-dasharray="3 3" stroke-width="1"/>
+                        <line x1="10" y1="82" x2="110" y2="82" stroke="#CBD5E1" stroke-dasharray="3 3" stroke-width="1"/>
+                        <path d="${t.path}" fill="none" stroke="#C84B31" stroke-width="4.5" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <p class="text-xs text-ink-800/80">${t.desc}</p>
+                  </button>
+                `).join('')}
+              </div>
+
+              <!-- Tone Sandhi Rules -->
+              <div class="p-5 rounded-2xl bg-ink-900 text-ivory-100 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                <div class="p-3.5 rounded-xl bg-ink-800 border border-ink-700 flex items-center justify-between gap-2">
+                  <div>
+                    <strong class="text-gold-400 block mb-1">3rd + 3rd → 2nd + 3rd</strong>
+                    <span><b>你好</b> (nǐ hǎo) is spoken as <b>ní hǎo</b>.</span>
+                  </div>
+                  <button onclick="speakWord('你好', this)" class="p-2.5 rounded-xl bg-terracotta-500 text-white shrink-0">${eqIcon()}</button>
+                </div>
+                <div class="p-3.5 rounded-xl bg-ink-800 border border-ink-700 flex items-center justify-between gap-2">
+                  <div>
+                    <strong class="text-gold-400 block mb-1">不 (bù) + 4th → bú</strong>
+                    <span><b>不是</b> (bù shì) becomes <b>bú shì</b>.</span>
+                  </div>
+                  <button onclick="speakWord('不是', this)" class="p-2.5 rounded-xl bg-terracotta-500 text-white shrink-0">${eqIcon()}</button>
+                </div>
+                <div class="p-3.5 rounded-xl bg-ink-800 border border-ink-700 flex items-center justify-between gap-2">
+                  <div>
+                    <strong class="text-gold-400 block mb-1">一 (yī) Tone Shift</strong>
+                    <span><b>一个</b> becomes <b>yí gè</b>; <b>一本</b> becomes <b>yì běn</b>.</span>
+                  </div>
+                  <button onclick="speakWord('一个', this)" class="p-2.5 rounded-xl bg-terracotta-500 text-white shrink-0">${eqIcon()}</button>
+                </div>
+              </div>
+            </div>
+          ` : state.pinyinSub === 'board' ? `
+            <div class="study-card rounded-3xl p-6 sm:p-8 space-y-5">
+              <div>
+                <h2 class="text-xl sm:text-2xl font-bold text-ink-900">Mandarin Initials Soundboard</h2>
+                <p class="text-xs sm:text-sm text-ink-800/75 mt-1">Click any syllable to compare flat-tongue (j/q/x), curled-tongue (zh/ch/sh/r), and dental (z/c/s) sounds.</p>
+              </div>
+              <div class="space-y-4">
+                ${PINYIN_SOUNDBOARD.map(grp => `
+                  <div class="p-4 rounded-2xl bg-ivory-200/70 border border-ivory-300 space-y-2.5">
+                    <div class="text-xs font-bold uppercase tracking-wider text-ink-900">${grp.group}</div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                      ${grp.items.map(it => `
+                        <button onclick="speakWord('${it.h}', this)" class="p-3 rounded-xl bg-ivory-50 border border-ivory-300 hover:border-terracotta-500 flex items-center justify-between text-left transition">
+                          <div>
+                            <div class="text-sm font-mono font-bold text-terracotta-500">${it.p}</div>
+                            <div class="text-lg font-bold hanzi text-ink-900">${it.h}</div>
+                            <div class="text-[11px] text-ink-800/70">${it.en}</div>
+                          </div>
+                          <span class="text-ink-900">${eqIcon()}</span>
+                        </button>
+                      `).join('')}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : `
+            <div class="study-card rounded-3xl p-6 sm:p-8 space-y-6">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <span class="text-xs font-bold uppercase tracking-wider text-terracotta-500">Listening Challenge</span>
+                  <h2 class="text-xl font-bold text-ink-900">Listen and Select the Exact Pinyin & Meaning</h2>
+                </div>
+                <button id="toneQuizPlayBtn" onclick="speakWord('${state.toneQuizTarget.h}', this)" class="px-5 py-3 rounded-2xl bg-ink-900 text-gold-400 hover:bg-terracotta-500 hover:text-white font-bold text-sm flex items-center gap-2.5 shadow-lg transition">
+                  ${eqIcon()}
+                  <span>🔊 Listen Word</span>
+                </button>
+              </div>
+
+              <div class="p-6 rounded-2xl bg-ivory-200/80 border border-ivory-300 text-center">
+                <div class="text-4xl font-bold hanzi text-ink-900">${state.toneQuizAnswered ? state.toneQuizTarget.h : '❓'}</div>
+                <div class="text-xs text-ink-800/65 mt-1">${state.toneQuizAnswered ? `${state.toneQuizTarget.p} — ${state.toneQuizTarget.en} (${state.toneQuizTarget.ar})` : 'Click "Listen Word" above to hear the Mandarin audio'}</div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                ${state.toneQuizOptions.map(opt => {
+                  let cls = 'bg-ivory-50 border-2 border-ivory-300 text-ink-900 hover:border-terracotta-500';
+                  if (state.toneQuizAnswered) {
+                    if (opt.id === state.toneQuizTarget.id) cls = 'bg-jade-500/15 border-2 border-jade-500 text-ink-900 font-bold';
+                    else if (opt.id === state.toneQuizPicked) cls = 'bg-terracotta-500/15 border-2 border-terracotta-500 text-ink-900 animate-shake';
+                    else cls = 'bg-ivory-50/40 border-2 border-ivory-200 opacity-50';
+                  }
+                  return `
+                    <button ${state.toneQuizAnswered ? 'disabled' : ''} onclick="submitToneQuiz('${opt.id}')" class="p-4 rounded-2xl text-left transition ${cls}">
+                      <div class="text-base font-mono font-bold text-terracotta-500">${opt.p}</div>
+                      <div class="text-sm font-semibold">${opt.en} • <span class="text-jade-600">${opt.ar}</span></div>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+
+              ${state.toneQuizAnswered ? `
+                <div class="flex justify-end">
+                  <button onclick="nextToneQuiz()" class="px-6 py-2.5 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 text-white font-bold text-sm">
+                    Next Sound →
+                  </button>
+                </div>
+              ` : ''}
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function setPinyinSub(sub) {
+      state.pinyinSub = sub;
+      if (sub === 'quiz' && !state.toneQuizTarget) prepareToneQuiz();
+      renderMain();
+      if (sub === 'quiz') {
+        speakWord(state.toneQuizTarget.h, document.getElementById('toneQuizPlayBtn'));
+      }
+    }
+
+    function submitToneQuiz(id) {
+      if (state.toneQuizAnswered) return;
+      state.toneQuizAnswered = true;
+      state.toneQuizPicked = id;
+      if (id === state.toneQuizTarget.id) {
+        addXP(15);
+        player.playSfx('ok');
+        showToast('✨ +15 XP! Accurate Pinyin & tone!');
+      } else {
+        player.playSfx('err');
+        showToast(`⚠️ It was ${state.toneQuizTarget.h} (${state.toneQuizTarget.p})`);
+      }
+      renderMain();
+    }
+
+    function nextToneQuiz() {
+      prepareToneQuiz();
+      renderMain();
+      speakWord(state.toneQuizTarget.h, document.getElementById('toneQuizPlayBtn'));
+    }
+
+    // =========================================================================
+    // 11. TAB 4: VOCABULARY ARENA (FULL HSK 1 QUIZ ENGINE)
+    // =========================================================================
+    function generateArenaQuestion() {
+      const pool = state.arenaUnit === 0
+        ? HSK1_WORDS
+        : HSK1_WORDS.filter(w => w.u === state.arenaUnit);
+      const safePool = pool.length >= 4 ? pool : HSK1_WORDS;
+      const target = safePool[Math.floor(Math.random() * safePool.length)];
+      const distractors = shuffle(HSK1_WORDS.filter(w => w.id !== target.id)).slice(0, 3);
+      state.arenaQuestion = {
+        target,
+        options: shuffle([target, ...distractors])
+      };
+      state.arenaAnswered = false;
+      state.arenaPicked = null;
+    }
+
+    function renderArenaTab() {
+      if (!state.arenaQuestion) generateArenaQuestion();
+
+      if (state.arenaHearts <= 0) {
+        return `
+          <div class="study-card rounded-3xl p-8 text-center space-y-5 animate-pop max-w-xl mx-auto">
+            <div class="text-5xl">💔</div>
+            <h2 class="text-2xl font-bold text-ink-900">Arena Run Complete!</h2>
+            <p class="text-sm text-ink-800/75">You ran out of hearts. Ready to jump back in and sharpen your HSK 1 mastery?</p>
+            <button onclick="resetArena()" class="px-6 py-3 rounded-2xl bg-terracotta-500 hover:bg-terracotta-600 text-white font-bold text-sm">
+              Start New Run ⚡
+            </button>
+          </div>
+        `;
+      }
+
+      const { target, options } = state.arenaQuestion;
+      const hearts = '❤️'.repeat(state.arenaHearts) + '🖤'.repeat(3 - state.arenaHearts);
+
+      return `
+        <div class="space-y-5 animate-pop max-w-3xl mx-auto">
+          <!-- Controls Bar -->
+          <div class="study-card rounded-3xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-2">
+              <select onchange="changeArenaUnit(this.value)" class="px-3 py-2 rounded-xl bg-ivory-200 border border-ivory-300 text-xs font-bold text-ink-900 focus:outline-none">
+                <option value="0" ${state.arenaUnit === 0 ? 'selected' : ''}>All HSK 1 (155 Words)</option>
+                ${UNITS.map(u => `<option value="${u.id}" ${state.arenaUnit === u.id ? 'selected' : ''}>${u.title}</option>`).join('')}
+              </select>
+
+              <select onchange="changeArenaMode(this.value)" class="px-3 py-2 rounded-xl bg-ivory-200 border border-ivory-300 text-xs font-bold text-ink-900 focus:outline-none">
+                <option value="listen" ${state.arenaMode === 'listen' ? 'selected' : ''}>Mode: Listening → Meaning</option>
+                <option value="hanzi2en" ${state.arenaMode === 'hanzi2en' ? 'selected' : ''}>Mode: Hanzi → Meaning</option>
+                <option value="en2hanzi" ${state.arenaMode === 'en2hanzi' ? 'selected' : ''}>Mode: Meaning → Hanzi</option>
+              </select>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-bold text-terracotta-500">🔥 Streak: ${state.arenaStreak}</span>
+              <span class="px-3 py-1 rounded-full bg-ink-900 text-xs tracking-widest">${hearts}</span>
+            </div>
+          </div>
+
+          <!-- Question Card -->
+          <div class="study-card rounded-3xl p-6 sm:p-8 space-y-6">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-terracotta-500">Unit ${target.u} • ${target.pos}</span>
+              <button id="arenaAudioBtn" onclick="speakWord('${target.h}', this)" class="px-4 py-2 rounded-xl bg-ink-900 text-gold-400 hover:bg-terracotta-500 hover:text-white text-xs font-bold flex items-center gap-2 transition">
+                ${eqIcon()}
+                <span>Pronounce</span>
+              </button>
+            </div>
+
+            <div class="py-6 px-4 rounded-3xl bg-ivory-200/80 border border-ivory-300 text-center space-y-2">
+              ${state.arenaMode === 'listen' ? `
+                <div class="text-5xl font-bold hanzi text-ink-900">${state.arenaAnswered ? target.h : '🔊'}</div>
+                <div class="text-sm text-ink-800/70">${state.arenaAnswered ? `${target.p} — ${target.en} (${target.ar})` : 'Tap "Pronounce" above and identify the word you hear'}</div>
+              ` : state.arenaMode === 'hanzi2en' ? `
+                <div class="text-5xl sm:text-6xl font-bold hanzi text-ink-900">${target.h}</div>
+                ${state.showPinyin ? `<div class="text-base font-mono font-semibold text-terracotta-500">${target.p}</div>` : ''}
+              ` : `
+                <div class="text-2xl sm:text-3xl font-bold text-ink-900">${target.en}</div>
+                <div class="text-lg font-bold text-jade-600" dir="rtl">${target.ar}</div>
+              `}
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              ${options.map(opt => {
+                let cls = 'bg-ivory-50 border-2 border-ivory-300 text-ink-900 hover:border-terracotta-500';
+                if (state.arenaAnswered) {
+                  if (opt.id === target.id) cls = 'bg-jade-500/15 border-2 border-jade-500 text-ink-900 font-bold';
+                  else if (opt.id === state.arenaPicked) cls = 'bg-terracotta-500/15 border-2 border-terracotta-500 text-ink-900 animate-shake';
+                  else cls = 'bg-ivory-50/40 border-2 border-ivory-200 opacity-45';
+                }
+
+                return `
+                  <button ${state.arenaAnswered ? 'disabled' : ''} onclick="submitArenaAnswer('${opt.id}')" class="p-4 rounded-2xl text-left transition flex items-center justify-between gap-2 ${cls}">
+                    ${state.arenaMode === 'en2hanzi' ? `
+                      <div>
+                        <div class="text-2xl font-bold hanzi">${opt.h}</div>
+                        ${state.showPinyin ? `<div class="text-xs font-mono text-terracotta-500">${opt.p}</div>` : ''}
+                      </div>
+                    ` : `
+                      <div>
+                        <div class="text-base font-bold">${opt.en}</div>
+                        <div class="text-xs font-semibold text-jade-600">${opt.ar}</div>
+                      </div>
+                    `}
+                    ${state.arenaAnswered && opt.id === target.id ? '<span>✅</span>' : ''}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+
+            ${state.arenaAnswered ? `
+              <div class="p-4 rounded-2xl bg-ink-900 text-ivory-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-pop">
+                <div class="text-xs">
+                  <strong class="text-gold-400">Example: </strong><span class="hanzi font-bold">${target.exH}</span> — ${target.exEn}
+                </div>
+                <button onclick="nextArenaQuestion()" class="px-5 py-2.5 rounded-xl bg-terracotta-500 hover:bg-terracotta-600 text-white font-bold text-xs sm:text-sm shrink-0">
+                  Next Word →
+                </button>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function changeArenaUnit(val) {
+      state.arenaUnit = Number(val);
+      generateArenaQuestion();
+      renderMain();
+    }
+
+    function changeArenaMode(val) {
+      state.arenaMode = val;
+      generateArenaQuestion();
+      renderMain();
+    }
+
+    function submitArenaAnswer(id) {
+      if (state.arenaAnswered) return;
+      const target = state.arenaQuestion.target;
+      state.arenaAnswered = true;
+      state.arenaPicked = id;
+      speakWord(target.h, document.getElementById('arenaAudioBtn'));
+
+      if (id === target.id) {
+        state.arenaStreak += 1;
+        const bonus = 15 + Math.min(20, state.arenaStreak * 2);
+        addXP(bonus);
+        player.playSfx('ok');
+        showToast(`✨ +${bonus} XP! Streak ${state.arenaStreak}`);
+      } else {
+        state.arenaStreak = 0;
+        state.arenaHearts = Math.max(0, state.arenaHearts - 1);
+        player.playSfx('err');
+        showToast(`💔 Correct: ${target.h} (${target.p}) — ${target.en}`);
+      }
+      renderMain();
+    }
+
+    function nextArenaQuestion() {
+      generateArenaQuestion();
+      renderMain();
+      if (state.arenaMode === 'listen') {
+        speakWord(state.arenaQuestion.target.h, document.getElementById('arenaAudioBtn'));
+      }
+    }
+
+    function resetArena() {
+      state.arenaHearts = 3;
+      state.arenaStreak = 0;
+      generateArenaQuestion();
+      renderMain();
+    }
+
+    // =========================================================================
+    // 12. TAB 5: SENTENCE & DIALOGUE ARCADE
+    // =========================================================================
+    function renderArcadeTab() {
+      return `
+        <div class="space-y-5 animate-pop max-w-4xl mx-auto">
+          <div class="flex gap-2 bg-ink-800 p-1.5 rounded-2xl border border-ink-700">
+            <button onclick="setArcadeSub('builder')" class="flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition ${state.arcadeSub === 'builder' ? 'bg-terracotta-500 text-white shadow' : 'text-ivory-200 hover:text-white'}">
+              🧩 Part A: Word-Order Sentence Builder
+            </button>
+            <button onclick="setArcadeSub('dialogue')" class="flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition ${state.arcadeSub === 'dialogue' ? 'bg-terracotta-500 text-white shadow' : 'text-ivory-200 hover:text-white'}">
+              💬 Part B: 4 Real-Life HSK 1 Scenarios
+            </button>
+          </div>
+
+          ${state.arcadeSub === 'builder' ? renderBuilderView() : renderDialogueView()}
+        </div>
+      `;
+    }
+
+    function setArcadeSub(sub) {
+      state.arcadeSub = sub;
+      renderMain();
+    }
+
+    function renderBuilderView() {
+      const ch = SENTENCE_CHALLENGES[state.builderIdx];
+
+      return `
+        <div class="study-card rounded-3xl p-6 sm:p-8 space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-terracotta-500">Pattern ${state.builderIdx + 1} of ${SENTENCE_CHALLENGES.length}</span>
+              <h2 class="text-xl font-bold text-ink-900">Assemble the Mandarin Sentence</h2>
+            </div>
+            <button id="builderAudioBtn" onclick="speakWord('${ch.fullH}', this)" class="px-4 py-2 rounded-xl bg-ink-900 text-gold-400 hover:bg-terracotta-500 hover:text-white text-xs font-bold flex items-center gap-2 transition">
+              ${eqIcon()}
+              <span>Hear Target</span>
+            </button>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-ivory-200/80 border border-ivory-300 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div class="text-lg font-bold text-ink-900">“${ch.en}”</div>
+            <div class="text-base font-bold text-jade-600" dir="rtl">${ch.ar}</div>
+          </div>
+
+          <!-- Assembly Tray -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs font-bold text-ink-800/65">
+              <span>YOUR SENTENCE (Tap tile to remove)</span>
+              ${state.builderTray.length > 0 && !state.builderChecked ? `<button onclick="clearBuilder()" class="text-terracotta-500 hover:underline">Clear</button>` : ''}
+            </div>
+            <div class="min-h-[76px] p-3.5 rounded-2xl bg-ivory-50 border-2 border-dashed ${state.builderChecked ? (state.builderOk ? 'border-jade-500 bg-jade-500/10' : 'border-terracotta-500 bg-terracotta-500/10') : 'border-ink-800/25'} flex flex-wrap items-center gap-2">
+              ${state.builderTray.length === 0 ? `<span class="text-xs text-ink-800/45 italic">Tap tiles below in Mandarin word order...</span>` : state.builderTray.map((tileIdx, pos) => `
+                <button ${state.builderChecked ? 'disabled' : ''} onclick="removeBuilderTile(${pos})" class="px-4 py-2 rounded-xl bg-ink-900 text-gold-400 font-bold hanzi text-lg shadow hover:bg-ink-800 transition">
+                  ${ch.tiles[tileIdx]}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Word Bank -->
+          <div class="flex flex-wrap gap-2.5">
+            ${ch.tiles.map((word, idx) => {
+              const used = state.builderTray.includes(idx);
+              return `
+                <button ${used || state.builderChecked ? 'disabled' : ''} onclick="pickBuilderTile(${idx}, this)" class="px-4 py-2.5 rounded-xl border-2 font-bold hanzi text-lg transition ${used ? 'bg-ivory-200 border-ivory-300 opacity-35 cursor-not-allowed' : 'bg-ivory-50 border-ivory-300 hover:border-terracotta-500 text-ink-900 shadow-sm'}">
+                  ${word}
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          ${!state.builderChecked ? `
+            <div class="flex justify-end">
+              <button ${state.builderTray.length === 0 ? 'disabled' : ''} onclick="verifyBuilder()" class="px-6 py-3 rounded-2xl bg-terracotta-500 hover:bg-terracotta-600 text-white font-bold text-sm disabled:opacity-40">
+                Check Sentence ✓
+              </button>
+            </div>
+          ` : `
+            <div class="p-4 rounded-2xl bg-ink-900 text-ivory-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-pop">
+              <div class="space-y-1">
+                <div class="text-sm font-bold ${state.builderOk ? 'text-jade-500' : 'text-terracotta-500'}">
+                  ${state.builderOk ? '✅ Correct! ' + ch.fullH : '❌ Answer: ' + ch.fullH + ' (' + ch.fullP + ')'}
+                </div>
+                <p class="text-xs text-ivory-200/80">${ch.note}</p>
+              </div>
+              <div class="flex gap-2 shrink-0">
+                ${!state.builderOk ? `<button onclick="retryBuilder()" class="px-4 py-2 rounded-xl bg-ink-800 text-xs font-bold">Retry</button>` : ''}
+                <button onclick="nextBuilder()" class="px-5 py-2.5 rounded-xl bg-terracotta-500 text-white font-bold text-xs sm:text-sm">Next →</button>
+              </div>
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function pickBuilderTile(idx, el) {
+      if (state.builderChecked || state.builderTray.includes(idx)) return;
+      const ch = SENTENCE_CHALLENGES[state.builderIdx];
+      speakWord(ch.tiles[idx], el);
+      state.builderTray.push(idx);
+      renderMain();
+    }
+
+    function removeBuilderTile(pos) {
+      if (state.builderChecked) return;
+      state.builderTray.splice(pos, 1);
+      renderMain();
+    }
+
+    function clearBuilder() {
+      state.builderTray = [];
+      renderMain();
+    }
+
+    function verifyBuilder() {
+      const ch = SENTENCE_CHALLENGES[state.builderIdx];
+      const built = state.builderTray.map(i => ch.tiles[i]);
+      const ok = built.length === ch.target.length && built.every((v, i) => v === ch.target[i]);
+      state.builderChecked = true;
+      state.builderOk = ok;
+      speakWord(ch.fullH, document.getElementById('builderAudioBtn'));
+      if (ok) {
+        addXP(25);
+        player.playSfx('ok');
+        showToast('✨ +25 XP! Perfect grammar order!');
+      } else {
+        player.playSfx('err');
+      }
+      renderMain();
+    }
+
+    function retryBuilder() {
+      state.builderTray = [];
+      state.builderChecked = false;
+      state.builderOk = false;
+      renderMain();
+    }
+
+    function nextBuilder() {
+      state.builderIdx = (state.builderIdx + 1) % SENTENCE_CHALLENGES.length;
+      retryBuilder();
+    }
+
+    function renderDialogueView() {
+      const sc = DIALOGUE_SCENARIOS[state.scenarioIdx];
+
+      if (state.scenarioDone) {
+        return `
+          <div class="study-card rounded-3xl p-8 text-center space-y-4 animate-pop">
+            <div class="text-5xl">🏆</div>
+            <h3 class="text-2xl font-bold text-ink-900">Scenario Mastered: ${sc.title}</h3>
+            <p class="text-sm text-ink-800/75">You completed every conversational turn in natural HSK 1 Mandarin!</p>
+            <div class="flex justify-center gap-3 pt-2">
+              <button onclick="selectScenario(${state.scenarioIdx})" class="px-5 py-2.5 rounded-xl bg-ink-900 text-ivory-100 text-xs font-bold">Replay</button>
+              <button onclick="selectScenario(${(state.scenarioIdx + 1) % DIALOGUE_SCENARIOS.length})" class="px-5 py-2.5 rounded-xl bg-terracotta-500 text-white text-xs font-bold">Next Scenario →</button>
+            </div>
+          </div>
+        `;
+      }
+
+      const turn = sc.turns[state.turnIdx];
+
+      return `
+        <div class="space-y-4">
+          <!-- Scenario Selector -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            ${DIALOGUE_SCENARIOS.map((item, idx) => `
+              <button onclick="selectScenario(${idx})" class="p-3 rounded-2xl text-left border-2 transition ${idx === state.scenarioIdx ? 'bg-ivory-100 text-ink-900 border-terracotta-500 font-bold' : 'bg-ink-800 text-ivory-200 border-ink-700 hover:border-gold-500'}">
+                <div class="text-lg">${item.icon}</div>
+                <div class="text-xs mt-1 truncate">${item.title}</div>
+              </button>
+            `).join('')}
+          </div>
+
+          <div class="study-card rounded-3xl p-6 sm:p-8 space-y-6">
+            <div class="flex items-center justify-between border-b border-ivory-300 pb-3">
+              <div>
+                <h3 class="text-lg font-bold text-ink-900">${sc.title}</h3>
+                <span class="text-xs text-jade-600 font-bold">${sc.ar}</span>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-ink-900 text-gold-400 text-xs font-bold">Turn ${state.turnIdx + 1} / ${sc.turns.length}</span>
+            </div>
+
+            <!-- NPC Prompt -->
+            <div class="p-4 rounded-2xl bg-ivory-200 border border-ivory-300 flex items-start justify-between gap-3">
+              <div>
+                <div class="text-xs font-bold text-terracotta-500 mb-1">${sc.partner}</div>
+                <div class="text-xl font-bold hanzi text-ink-900">${turn.npcH}</div>
+                ${state.showPinyin ? `<div class="text-xs font-mono text-terracotta-600 mt-0.5">${turn.npcP}</div>` : ''}
+                <div class="text-xs text-ink-800/80 mt-1">${turn.npcEn} • <span class="text-jade-600 font-semibold">${turn.npcAr}</span></div>
+              </div>
+              <button id="npcDialogueBtn" onclick="speakWord('${turn.npcH}', this)" class="px-3 py-2 rounded-xl bg-ink-900 text-gold-400 text-xs font-bold flex items-center gap-1.5 shrink-0">
+                ${eqIcon()}
+                <span>Listen</span>
+              </button>
+            </div>
+
+            <!-- Choices -->
+            <div class="space-y-3">
+              ${turn.options.map((opt, idx) => {
+                let cls = 'bg-ivory-50 border-2 border-ivory-300 text-ink-900 hover:border-terracotta-500';
+                if (state.turnAnswered) {
+                  if (opt.ok) cls = 'bg-jade-500/15 border-2 border-jade-500 text-ink-900';
+                  else if (idx === state.turnPicked) cls = 'bg-terracotta-500/15 border-2 border-terracotta-500 text-ink-900 animate-shake';
+                  else cls = 'opacity-45 border-2 border-ivory-200';
+                }
+                return `
+                  <button ${state.turnAnswered ? 'disabled' : ''} onclick="pickDialogueOption(${idx}, this)" class="w-full p-4 rounded-2xl text-left flex items-center justify-between gap-3 transition ${cls}">
+                    <div>
+                      <div class="text-lg font-bold hanzi">${opt.h}</div>
+                      ${state.showPinyin ? `<div class="text-xs font-mono text-terracotta-500">${opt.p}</div>` : ''}
+                      <div class="text-xs text-ink-800/75 mt-0.5">${opt.en}</div>
+                    </div>
+                    <span class="text-ink-900 shrink-0">${eqIcon()}</span>
+                  </button>
+                `;
+              }).join('')}
+            </div>
+
+            ${state.turnAnswered ? `
+              <div class="p-4 rounded-2xl bg-ink-900 text-ivory-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-pop">
+                <div class="text-xs"><strong class="text-gold-400">Coach Tip: </strong>${turn.options[state.turnPicked].tip}</div>
+                <button onclick="advanceDialogueTurn()" class="px-5 py-2.5 rounded-xl bg-terracotta-500 text-white font-bold text-xs shrink-0">
+                  ${state.turnIdx + 1 >= sc.turns.length ? 'Complete Scenario 🏆' : 'Next Turn →'}
+                </button>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function selectScenario(idx) {
+      state.scenarioIdx = idx;
+      state.turnIdx = 0;
+      state.turnAnswered = false;
+      state.turnPicked = null;
+      state.scenarioDone = false;
+      renderMain();
+      const sc = DIALOGUE_SCENARIOS[idx];
+      speakWord(sc.turns[0].npcH, document.getElementById('npcDialogueBtn'));
+    }
+
+    function pickDialogueOption(idx, btnEl) {
+      if (state.turnAnswered) return;
+      const sc = DIALOGUE_SCENARIOS[state.scenarioIdx];
+      const opt = sc.turns[state.turnIdx].options[idx];
+      state.turnAnswered = true;
+      state.turnPicked = idx;
+      speakWord(opt.h, btnEl);
+      if (opt.ok) {
+        addXP(30);
+        player.playSfx('ok');
+        showToast('✨ +30 XP! Natural Mandarin response!');
+      } else {
+        player.playSfx('err');
+      }
+      renderMain();
+    }
+
+    function advanceDialogueTurn() {
+      const sc = DIALOGUE_SCENARIOS[state.scenarioIdx];
+      if (state.turnIdx + 1 >= sc.turns.length) {
+        state.scenarioDone = true;
+        addXP(50);
+      } else {
+        state.turnIdx += 1;
+        state.turnAnswered = false;
+        state.turnPicked = null;
+      }
+      renderMain();
+      if (!state.scenarioDone) {
+        speakWord(sc.turns[state.turnIdx].npcH, document.getElementById('npcDialogueBtn'));
+      }
+    }
+
+    // =========================================================================
+    // 13. MAIN RENDER ROUTER & INIT
+    // =========================================================================
+    function renderMain() {
+      const root = document.getElementById('mainWorkspace');
+      if (state.tab === 'encyclopedia') root.innerHTML = renderEncyclopediaTab();
+      else if (state.tab === 'grammar') root.innerHTML = renderGrammarTab();
+      else if (state.tab === 'pinyin') root.innerHTML = renderPinyinTab();
+      else if (state.tab === 'arena') root.innerHTML = renderArenaTab();
+      else if (state.tab === 'arcade') root.innerHTML = renderArcadeTab();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateTopHud();
+      renderMain();
+    });
+  </script>
+</body>
+</html>

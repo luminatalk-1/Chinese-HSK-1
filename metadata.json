@@ -1,0 +1,6 @@
+{
+  "name": "HSK 1 Complete Studio",
+  "description": "Interactive Mandarin Chinese HSK 1 Encyclopedia, Grammar Codex, Tone Lab, Quiz Arena, and Dialogue Arcade with multi-layer native audio and studio sound effects.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

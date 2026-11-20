@@ -1,0 +1,85 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Arabic', system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+.font-hanzi {
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+.font-arabic {
+  font-family: 'Noto Sans Arabic', 'Plus Jakarta Sans', sans-serif;
+}
+
+.font-mono-tabular {
+  font-family: 'JetBrains Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Equalizer Audio Indicator Bars */
+.eq-bars {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+  width: 14px;
+}
+
+.eq-bars span {
+  display: block;
+  width: 2.5px;
+  background-color: currentColor;
+  border-radius: 999px;
+  transition: height 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.eq-bars span:nth-child(1) { height: 5px; }
+.eq-bars span:nth-child(2) { height: 11px; }
+.eq-bars span:nth-child(3) { height: 7px; }
+.eq-bars span:nth-child(4) { height: 4px; }
+
+.is-speaking .eq-bars span {
+  animation: eqBounce 0.4s ease-in-out infinite alternate;
+}
+.is-speaking .eq-bars span:nth-child(1) { animation-delay: 0s; }
+.is-speaking .eq-bars span:nth-child(2) { animation-delay: 0.1s; }
+.is-speaking .eq-bars span:nth-child(3) { animation-delay: 0.22s; }
+.is-speaking .eq-bars span:nth-child(4) { animation-delay: 0.08s; }
+
+@keyframes eqBounce {
+  0% { height: 3px; }
+  100% { height: 14px; }
+}
+
+@keyframes cardSettle {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-settle {
+  animation: cardSettle 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes gentleShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-2px); }
+}
+
+.animate-shake {
+  animation: gentleShake 260ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-speaking .eq-bars span,
+  .animate-settle,
+  .animate-shake {
+    animation: none !important;
+  }
+}
